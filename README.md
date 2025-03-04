@@ -55,3 +55,6 @@ https://github.com/user-attachments/assets/c4614358-0c6e-46cb-b281-4589782293ea
 ## How It Works
 
 GDScriptUI scans your project for View subclasses and dynamically generates factory methods, making your custom components instantly available with the same syntax as built-in elements.
+
+## License
+This project is licensed under the [MIT License](LICENSE).
