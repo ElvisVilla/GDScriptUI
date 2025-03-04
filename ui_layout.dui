@@ -1,0 +1,42 @@
+var a = .234
+#This is a comment
+
+@export var showContent: bool = 4 != 2
+var elements = ["grass", "Shovel", "Sword", "Plant"]
+
+## This is a comment
+VBox {
+	
+	Label("Amor!")
+	Hbox {
+
+		Button("Show")
+			.onPressed(func(): showContent = true)
+			.padding(2)
+		
+		VBox {
+			
+			Label("Hello Mi Amor!")
+				.fontSize(20)
+				
+			Label("Te amo!")
+				.fontSize(15)
+			
+			Label("A ver si es verdad!")
+				.fontSize(40)
+				
+			Label("Te amo mucho!").fontSize(15),
+
+			VBox {
+				VBox {
+					Button("Este boton hace algo")
+					.fontSize(15),
+
+					button("Este boton hace algo")
+					.fontSize(15)
+					.onPressed(func(): print("Boton 2 presionado")),
+				}
+			}
+		}
+	}
+}

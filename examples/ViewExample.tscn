@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://38xdxhygy60f"]
+
+[ext_resource type="Script" uid="uid://b4v0e84lkl5mn" path="res://framework/core/UIRoot.gd" id="1_8831b"]
+[ext_resource type="Script" uid="uid://854mbyk8os6d" path="res://framework/views/App UI.gd" id="1_eglex"]
+[ext_resource type="Theme" uid="uid://dyrw727ts3xo1" path="res://framework/themes/UITheme.tres" id="1_r8m1q"]
+
+[node name="Entry" type="PanelContainer" node_paths=PackedStringArray("content")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_r8m1q")
+script = ExtResource("1_8831b")
+content = NodePath("AppUI")
+
+[node name="AppUI" type="Node" parent="."]
+script = ExtResource("1_eglex")
