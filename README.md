@@ -1,6 +1,6 @@
 # GDScriptUI
 
-GDScriptUI is a declarative UI framework for Godot 4 inspired by SwiftUI<br>.
+GDScriptUI is a declarative UI framework for Godot 4 inspired by SwiftUI.<br>
 Bringing an elegant component-based approach to GDScript. It aims to create modular interfaces with a clean, functional syntax<br>
 without the verbosity of traditional scene-based UI development.
 
