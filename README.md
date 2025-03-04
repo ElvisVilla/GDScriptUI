@@ -20,31 +20,37 @@ class_name PersonView
 var names: Array = ["Lucy", "Albert", "Niklas", "John", "Mariela"]
 
 #Observed property
-var person_name: String:
+var person_name: String = "Lucy":
 	set(value):
 		person_name = value
 		observe("person_name", person_name)
 
-func _init(named: String) -> void:
-	person_name = named
+# func _init(named: String) -> void:
+# 	person_name = named
 
 func _ready() -> void:
 	body = [
 		HBox("Person container", [
 			
 			Label(person_name)
-				.fontSize(20),
+				.fontSize(20), # ',' defines the end of the component
 
 			Image("res://icon.svg")
 				.expand_mode(ExpandMode.IGNORE_SIZE)
-				.frame(50, 50),
+				.frame(50, 50) #We can define our own size
+				.visible(person_name == "Lucy"),
 
 			Button("Random Name")
 				.onPressed(func(): person_name = names.pick_random())
 		])
+		.spacing(5)
 	]
-
 ```
+
+
+
+https://github.com/user-attachments/assets/c4614358-0c6e-46cb-b281-4589782293ea
+
 
 ## How It Works
 
