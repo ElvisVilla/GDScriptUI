@@ -15,8 +15,8 @@ func text(value: String) -> LabelBuilder:
 	_content_node.text = value
 	return self
 
-func fontSize(size: int) -> LabelBuilder:
-	_content_node.add_theme_font_size_override("font_size", size)
+func fontSize(font_size: int) -> LabelBuilder:
+	_content_node.add_theme_font_size_override("font_size", font_size)
 	return self
 
 func align(horizontal: int = HORIZONTAL_ALIGNMENT_LEFT, vertical: int = VERTICAL_ALIGNMENT_CENTER) -> LabelBuilder:

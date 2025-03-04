@@ -52,6 +52,9 @@ func Image(texture = null) -> TextureRectBuilder:
 func Label(text: String = "") -> LabelBuilder:
 	return LabelBuilder.new(text)
 
+func TextEdit(text: String, place_holder: String) -> TextEditBuilder:
+	return TextEditBuilder.new(text, place_holder)
+
 
 # Custom enums that mirror TextureRect's enums for better readability
 enum ExpandMode {

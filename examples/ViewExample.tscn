@@ -11,8 +11,6 @@ anchor_right = 0.297
 anchor_bottom = 0.316
 offset_right = -7.14401
 offset_bottom = -5.76801
-grow_horizontal = 2
-grow_vertical = 2
 theme = ExtResource("1_kca8q")
 script = ExtResource("2_byw35")
 content = NodePath("PersonView")
@@ -23,13 +21,3 @@ script = ExtResource("3_a5sjt")
 [node name="PersonView" type="Node" parent="."]
 script = ExtResource("4_1niml")
 metadata/_custom_type_script = "uid://ctsft43wsgj5f"
-
-[node name="Control" type="Control" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="Button" type="Button" parent="Control"]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-text = "Press Me"

@@ -3,7 +3,9 @@ class_name BaseBuilder
 
 var _content_node: Control # The actual control being built (Button, Label, etc.)
 var _margin_node: MarginContainer # Optional margin wrapper
+var _panel_node: PanelContainer # Optional panel background wrapper
 var _use_margin: bool = false # Flag to determine if we're using margin
+var _use_panel: bool = false # Flag to determine if we're using panel background
 
 func _init():
     pass
@@ -20,9 +22,37 @@ func _setup_margin_if_needed():
         else:
             _margin_node.add_child(_content_node)
 
+# Creates and configures the panel container if needed
+func _setup_panel_if_needed():
+    if _use_panel and not _panel_node:
+        _panel_node = PanelContainer.new()
+        
+        # If we already have a margin, place the panel outside the margin
+        if _use_margin and _margin_node:
+            if _margin_node.get_parent():
+                var parent = _margin_node.get_parent()
+                parent.remove_child(_margin_node)
+                parent.add_child(_panel_node)
+                _panel_node.add_child(_margin_node)
+            else:
+                _panel_node.add_child(_margin_node)
+        # Otherwise, place the panel directly around the content
+        elif _content_node.get_parent():
+            var parent = _content_node.get_parent()
+            parent.remove_child(_content_node)
+            parent.add_child(_panel_node)
+            _panel_node.add_child(_content_node)
+        else:
+            _panel_node.add_child(_content_node)
+
 ## Gets the node that should be added to the parent
 func _get_parent_node() -> Control:
-    return _margin_node if _use_margin else _content_node
+    if _use_panel:
+        return _panel_node
+    elif _use_margin:
+        return _margin_node
+    else:
+        return _content_node
 
 # Toggle margin container usage
 func _with_margin(enable: bool = true) -> BaseBuilder:
@@ -50,6 +80,8 @@ func name(value: String) -> BaseBuilder:
     _content_node.name = value
     if _use_margin and _margin_node:
         _margin_node.name = value + " Container"
+    if _use_panel and _panel_node:
+        _panel_node.name = value + " Panel"
     return self
 
 # Focus control
@@ -92,6 +124,25 @@ func padding_specific(left: int = 0, top: int = 0, right: int = 0, bottom: int =
     return self
 
 
+# Customize panel background color
+func background(color: Color, corner_radius: int = 0) -> BaseBuilder:
+    if not _use_panel:
+        _use_panel = true
+        _setup_panel_if_needed()
+    
+    var style = StyleBoxFlat.new()
+    style.bg_color = color
+    #corner_radius
+    style.corner_radius_top_left = corner_radius
+    style.corner_radius_top_right = corner_radius
+    style.corner_radius_bottom_left = corner_radius
+    style.corner_radius_bottom_right = corner_radius
+    _panel_node.add_theme_stylebox_override("panel", style)
+
+    
+    return self
+
+#TODO: Test frame modifier for each control View
 func frame(width: int = -1, height: int = -1, expand_h: bool = false,
         expand_v: bool = false, fill_ratio: float = 1.0) -> BaseBuilder:
     if width >= 0 and height >= 0:

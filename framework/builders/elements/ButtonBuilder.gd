@@ -24,10 +24,10 @@ func onHover(callback: Callable) -> ButtonBuilder:
 	_content_node.mouse_entered.connect(callback)
 	return self
 
-func background(color: Color) -> ButtonBuilder:
-	button_style_box.bg_color = color
-	_content_node.add_theme_stylebox_override("normal", button_style_box)
-	return self
+# func background(color: Color) -> ButtonBuilder:
+# 	button_style_box.bg_color = color
+# 	_content_node.add_theme_stylebox_override("normal", button_style_box)
+# 	return self
 
 func corner_radius(radius: int) -> ButtonBuilder:
 	button_style_box.set("corner_radius_top_left", radius)

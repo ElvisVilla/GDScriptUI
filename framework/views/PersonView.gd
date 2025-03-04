@@ -14,20 +14,40 @@ var person_name: String = "Lucy":
 
 func _ready() -> void:
 	body = [
-		HBox("Person container", [
-			
-			Label(person_name)
-				.frame(100, 50).align(1).fontSize(20), # ',' defines the end of the component
 
-			Image("res://icon.svg")
-				.expand_mode(ExpandMode.IGNORE_SIZE)
-				.frame(50, 50) # We can define our own size
-				.visible(person_name == "Lucy"),
+		VBox("", [
+			HBox("Person container", [
+				
+				Label(person_name)
+					.frame(100, 50, true, false)
+					.align(1)
+					.fontSize(20),
 
-			Button("Random Name")
-				.onPressed(func(): person_name = names.pick_random())
-				.padding()
-				# .corner_radius(10)
+				Image("res://icon.svg")
+					.expand_mode(ExpandMode.IGNORE_SIZE)
+					.frame(50, 50)
+					.visible(person_name == "Lucy"),
+
+				Button("Random Name")
+					.onPressed(func(): person_name = names.pick_random())
+					.padding()
+					.onHover(func(): print("hovering on random name button"))
+
+			])
+			.spacing(4)
+			.padding(10)
+			.background(Color.BLACK, 10)
+			.padding(10),
+
+			TextEdit(person_name if person_name != "" else "Enter your name", "Enter your name")
+				.frame(500, 50)
+				.padding(10)
+				.textColor(Color.DARK_CYAN)
+				.editable(false)
+				.background(Color.PINK, 10)
+				.padding(10),
 		])
-		.spacing(5).padding(16)
+		.padding(10)
+		.background(Color.DARK_CYAN, 10)
+		.spacing(100)
 	]
