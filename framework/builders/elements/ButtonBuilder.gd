@@ -1,41 +1,32 @@
-extends RefCounted
+extends BaseBuilder
 class_name ButtonBuilder
 
-var _margin_node: MarginContainer
-var button: Button
 var button_style_box = StyleBoxFlat.new()
 
 func _init(_text: String):
-	_margin_node = MarginContainer.new()
-	button = Button.new()
-	_margin_node.name = _text + " Button MarginContainer"
-	button.name = _text + " Button"
-	button.text = _text
-	_margin_node.add_child(button)
-
-func in_node(parent: Node) -> ButtonBuilder:
-	parent.add_child(_margin_node, true)
-	return self
+	_content_node = Button.new()
+	_content_node.name = _text + " Button"
+	_content_node.text = _text
 
 func text(value: String) -> ButtonBuilder:
-	button.text = value
+	_content_node.text = value
 	return self
 
-func fontSize(size: int) -> ButtonBuilder:
-	button.add_theme_font_size_override("font_size", size)
+func fontSize(font_size: int) -> ButtonBuilder:
+	_content_node.add_theme_font_size_override("font_size", font_size)
 	return self
 
 func onPressed(callback: Callable) -> ButtonBuilder:
-	button.pressed.connect(callback)
+	_content_node.pressed.connect(callback)
 	return self
 	
 func onHover(callback: Callable) -> ButtonBuilder:
-	button.mouse_entered.connect(callback)
+	_content_node.mouse_entered.connect(callback)
 	return self
 
 func background(color: Color) -> ButtonBuilder:
 	button_style_box.bg_color = color
-	button.add_theme_stylebox_override("normal", button_style_box)
+	_content_node.add_theme_stylebox_override("normal", button_style_box)
 	return self
 
 func corner_radius(radius: int) -> ButtonBuilder:
@@ -43,25 +34,9 @@ func corner_radius(radius: int) -> ButtonBuilder:
 	button_style_box.set("corner_radius_top_right", radius)
 	button_style_box.set("corner_radius_bottom_left", radius)
 	button_style_box.set("corner_radius_bottom_right", radius)
-	button.add_theme_stylebox_override("normal", button_style_box)
-	return self
-	
-func padding(amount: int) -> ButtonBuilder:
-	_margin_node.add_theme_constant_override("margin_left", amount)
-	_margin_node.add_theme_constant_override("margin_right", amount)
-	_margin_node.add_theme_constant_override("margin_top", amount)
-	_margin_node.add_theme_constant_override("margin_bottom", amount)
-
-	return self
-	
-func visible(value: bool = true) -> ButtonBuilder:
-	_margin_node.visible = value
+	_content_node.add_theme_stylebox_override("normal", button_style_box)
 	return self
 
 func disabled(value: bool = true) -> ButtonBuilder:
-	button.disabled = value
-	return self
-	
-func tooltip(text: String) -> ButtonBuilder:
-	button.tooltip_text = text
+	_content_node.disabled = value
 	return self

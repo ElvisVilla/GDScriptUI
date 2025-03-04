@@ -14,7 +14,7 @@ func build_ui(parent) -> ContainerBuilder:
 	#We se the child content here, we also must pass the view_owner to the child views
 	var box: ContainerBuilder = null
 	if body.size() > 0:
-		box = VBox(name, body).spacing(8).padding(8).in_node(parent)
+		box = VBox(name, body).spacing(8).padding(8)._in_node(parent)
 		view_owner = parent
 		print("build_ui on parent: ", parent.name)
 		return box
@@ -22,7 +22,7 @@ func build_ui(parent) -> ContainerBuilder:
 	return null
 
 # Factory methods for container creation
-func HBox(description: String = "", children: Array = [], print: bool = false) -> ContainerBuilder:
+func HBox(description: String = "", children: Array = []) -> ContainerBuilder:
 	var builder = ContainerBuilder.new(children)
 
 	if print:

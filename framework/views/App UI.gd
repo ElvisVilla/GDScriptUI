@@ -108,5 +108,5 @@ func _ready():
 
 func PersonView(named: String):
 	return build_nested_view("PersonView",
-	 load("res://framework/PersonView.gd").new(named),
+	 load("res://framework/views/PersonView.gd").new(named),
 	  self)
