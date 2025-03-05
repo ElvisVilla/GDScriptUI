@@ -33,12 +33,12 @@ var person_name = "John Doe":
 
 func _ready():
 	body = [
-		VBox("App UI", [
+		VBox([
 			Label(view_name).fontSize(30),
 
-			VBox("Labels", [
+			VBox([
 
-				VBox("Toggles", [
+				VBox([
 
 					Label("Toggles")
 						.fontSize(20),
@@ -66,7 +66,7 @@ func _ready():
 
 			ForEach(elements,
 				func(element):
-					return VBox("Element", [
+					return VBox([
 						Label(element if element != null else "No value").fontSize(12),
 						Button(element if element != null else "No value").fontSize(12),
 						Button("Hello").fontSize(12),

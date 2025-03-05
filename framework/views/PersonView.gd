@@ -15,9 +15,10 @@ var person_name: String = "Lucy":
 func _ready() -> void:
 	body = [
 
-		VBox("", [
-			HBox("Person container", [
-				
+		VBox([
+
+			Label("Content View").fontSize(26).padding(),
+			HBox([
 				Label(person_name)
 					.frame(100, 50)
 					.align(1),
@@ -34,19 +35,18 @@ func _ready() -> void:
 
 			])
 			.alignment(BoxContainerAlignment.END)
-			.spacing(4)
-			.padding(10)
-			.background(Color.BLACK.lightened(0.2), 10)
-			.padding(10),
+			.padding()
+			.background(Color.BLACK.lightened(0.3), 10)
+			.padding(),
 
-			TextEdit(person_name if person_name != "" else "Enter your name", "Enter your name")
+			TextEdit(person_name if person_name != ""
+			 	else "Enter your name", "Enter your name")
 				.frame(500, 50)
-				.padding(10)
-				.background(Color.BLACK.lightened(0.2), 10)
-				.padding(10),
+				.padding()
+				.background(Color.BLACK.lightened(0.3), 10)
+				.padding(),
+
 		])
 		.frame(500, 500)
-		.spacing(10)
-		.background(Color.WEB_GRAY, 10)
 		.alignment(BoxContainerAlignment.BEGIN)
 	]

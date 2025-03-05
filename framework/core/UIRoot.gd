@@ -13,18 +13,18 @@ func _ready():
 		content.build_ui(self)
 		connect_all_views(content)
 
-	var child_node = get_child(0).get_child(0)
-	method_list = child_node.get_method_list()
+	# var child_node = get_child(0).get_child(0)
+	# method_list = child_node.get_method_list()
 
-	#Get _method_contructor and arguments
-	for method in method_list:
-		if method.flags == METHOD_FLAG_NORMAL:
-			if method.name.begins_with("_"):
-				my_methods.append(method)
-			if method.name.begins_with("_init"):
-				constructor = method.name
-				arguments = method.args
-				print("Constructor: ", constructor, " Arguments: ", arguments)
+	# #Get _method_contructor and arguments
+	# for method in method_list:
+	# 	if method.flags == METHOD_FLAG_NORMAL:
+	# 		if method.name.begins_with("_"):
+	# 			my_methods.append(method)
+	# 		if method.name.begins_with("_init"):
+	# 			constructor = method.name
+	# 			arguments = method.args
+	# 			print("Constructor: ", constructor, " Arguments: ", arguments)
 
 func connect_all_views(node):
 	if node is View:

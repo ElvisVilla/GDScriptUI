@@ -27,12 +27,16 @@ func horizontal(description: String = "") -> ContainerBuilder:
 	_margin_node.add_child(_content_node)
 	_margin_node.name = description + " Margin Container"
 	_content_node.name = description + " HBox Container"
-	# Re-add all children to the new container
-	# for child in _children:
-	# 	if child._get_parent_node().get_parent():
-	# 		child._get_parent_node().get_parent().remove_child(child._get_parent_node())
 
-	# 	_content_node.add_child(child._get_parent_node())
+	#spacing
+	_content_node.set("theme_override_constants/separation", 8)
+
+	#padding
+	_content_node.add_theme_constant_override("margin_left", 8)
+	_content_node.add_theme_constant_override("margin_right", 8)
+	_content_node.add_theme_constant_override("margin_top", 8)
+	_content_node.add_theme_constant_override("margin_bottom", 8)
+
 	_add_children_to_container()
 	return self
 	
@@ -44,11 +48,16 @@ func vertical(description: String = "") -> ContainerBuilder:
 	_margin_node.add_child(_content_node)
 	_margin_node.name = description + " Margin Container"
 	_content_node.name = description + " VBox Container"
-	# Re-add all children to the new container
-	# for child in _children:
-	# 	if child._margin_node.get_parent():
-	# 		child._margin_node.get_parent().remove_child(child._margin_node)
-	# 	_container.add_child(child._margin_node)
+	
+	#spacing
+	_content_node.set("theme_override_constants/separation", 8)
+
+	#padding
+	_content_node.add_theme_constant_override("margin_left", 8)
+	_content_node.add_theme_constant_override("margin_right", 8)
+	_content_node.add_theme_constant_override("margin_top", 8)
+	_content_node.add_theme_constant_override("margin_bottom", 8)
+
 	_add_children_to_container()
 	return self
 

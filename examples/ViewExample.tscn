@@ -6,11 +6,13 @@
 [ext_resource type="Script" uid="uid://ctsft43wsgj5f" path="res://framework/views/PersonView.gd" id="4_1niml"]
 
 [node name="Entry" type="PanelContainer" node_paths=PackedStringArray("content")]
-anchors_preset = -1
-anchor_right = 0.297
-anchor_bottom = 0.316
-offset_right = -7.14401
-offset_bottom = -5.76801
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme = ExtResource("1_kca8q")
 script = ExtResource("2_byw35")
 content = NodePath("PersonView")

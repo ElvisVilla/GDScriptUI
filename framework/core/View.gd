@@ -14,7 +14,7 @@ func build_ui(parent) -> ContainerBuilder:
 	#We se the child content here, we also must pass the view_owner to the child views
 	var box: ContainerBuilder = null
 	if body.size() > 0:
-		box = VBox(name, body).spacing(8).padding(8)._in_node(parent)
+		box = VBox(body, name)._in_node(parent)
 		view_owner = parent
 		print("build_ui on parent: ", parent.name)
 		return box
@@ -22,14 +22,11 @@ func build_ui(parent) -> ContainerBuilder:
 	return null
 
 # Factory methods for container creation
-func HBox(description: String = "", children: Array = []) -> ContainerBuilder:
+func HBox(children: Array = [], description: String = "") -> ContainerBuilder:
 	var builder = ContainerBuilder.new(children)
-
-	if print:
-		print("HBox description: ", description)
 	return builder.horizontal(description)
 	
-func VBox(description: String = "", children: Array = []) -> ContainerBuilder:
+func VBox(children: Array = [], description: String = "") -> ContainerBuilder:
 	var builder = ContainerBuilder.new(children)
 	return builder.vertical(description)
 
@@ -43,7 +40,7 @@ func ForEach(items, action: Callable):
 		if element != null:
 			result.append(element)
 	
-	return HBox("ForEach", result)
+	return HBox(result, "ForEach")
 
 
 func Image(texture = null) -> TextureRectBuilder:
