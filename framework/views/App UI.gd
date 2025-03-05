@@ -35,18 +35,8 @@ func _ready():
 	body = [
 		VBox("App UI", [
 			Label(view_name).fontSize(30),
-			PersonView("Elvis"),
 
 			VBox("Labels", [
-
-				Label("Hello Mi Amor!")
-					.fontSize(20),
-
-				Label("Te amo!")
-					.fontSize(15),
-
-				Label("Te amo mucho!")
-					.fontSize(15),
 
 				VBox("Toggles", [
 
@@ -75,20 +65,20 @@ func _ready():
 			Label("This content is visible: " + str(showContent2)),
 
 			ForEach(elements,
-			func(element):
-				return VBox("Element", [
-					Label(element if element != null else "No value").fontSize(12),
-					Button(element if element != null else "No value").fontSize(12),
-					Button("Hello").fontSize(12),
+				func(element):
+					return VBox("Element", [
+						Label(element if element != null else "No value").fontSize(12),
+						Button(element if element != null else "No value").fontSize(12),
+						Button("Hello").fontSize(12),
 
-					Image("res://icon.svg")
-						.frame(50, 50, true)
-						.visible(count < 5),
+						Image("res://icon.svg")
+							.frame(50, 50, true)
+							.visible(count < 5),
 
-					Image("res://icon.svg")
-						.frame(50, 50, true)
-						.visible(count >= 7),
-				]),
+						Image("res://icon.svg")
+							.frame(50, 50, true)
+							.visible(count >= 7),
+					]),
 			),
 
 			ForEach(elements,

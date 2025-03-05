@@ -60,23 +60,46 @@ func TextEdit(text: String, place_holder: String) -> TextEditBuilder:
 enum ExpandMode {
 	## The minimum size will be equal to texture size, TextureRect can't be smaller than the texture
 	KEEP_SIZE = 0,
-	IGNORE_SIZE = 1, # The size of the texture won't be considered for minimum size calculation
-	FIT_WIDTH = 2, # The height of the texture will be ignored; useful for horizontal layouts
-	FIT_WIDTH_PROPORTIONAL = 3, # Same as FIT_WIDTH but keeps texture's aspect ratio
-	FIT_HEIGHT = 4, # The width of the texture will be ignored; useful for vertical layouts
-	FIT_HEIGHT_PROPORTIONAL = 5 # Same as FIT_HEIGHT but keeps texture's aspect ratio
+	## The size of the texture won't be considered for minimum size calculation
+	IGNORE_SIZE = 1,
+	## The height of the texture will be ignored; useful for horizontal layouts
+	FIT_WIDTH_PROPORTIONAL = 3,
+	## The width of the texture will be ignored; useful for vertical layouts
+	FIT_HEIGHT = 4,
+	## Same as FIT_HEIGHT but keeps texture's aspect ratio
+	FIT_HEIGHT_PROPORTIONAL = 5,
 }
 
 enum StretchMode {
-	SCALE = 0, # Scale to fit the node's bounding rectangle
-	TILE = 1, # Tile inside the node's bounding rectangle
-	KEEP = 2, # The texture keeps its original size and stays in the top-left corner
-	KEEP_CENTERED = 3, # The texture keeps its original size and stays centered
+	## Scale (stretch) to fit the node's bounding rectangle
+	SCALE = 0,
+	## Tile the image inside the node's bounding rectangle
+	TILE = 1,
+	## The texture keeps its original size, is not counted for minimum size calculation inside the container
+	KEEP = 2,
+	## As with [Keep] the texture keeps its original size, is not counted for minimum size calculation inside the container
 	KEEP_ASPECT = 4, # Scale the texture to fit the bounding rectangle while maintaining aspect ratio
-	KEEP_ASPECT_CENTERED = 5, # Scale to fit, center it and maintain aspect ratio
-	KEEP_ASPECT_COVERED = 6 # Scale so shorter side fits bounding rectangle, other side may clip
+	## Scale to fit, center it and maintain aspect ratio
+	KEEP_ASPECT_CENTERED = 5,
+	## Cover the entire bounding rectangle, aspect ratio is not maintained, the texture may be cropped
+	KEEP_ASPECT_COVERED = 6,
 }
 
+enum SizeFlags {
+	SHRINK_BEGIN = Control.SIZE_SHRINK_BEGIN,
+	FILL = Control.SIZE_FILL,
+	EXPAND = Control.SIZE_EXPAND,
+	EXPAND_FILL = Control.SIZE_EXPAND_FILL,
+	SHRINK_CENTER = Control.SIZE_SHRINK_CENTER,
+	SHRINK_END = Control.SIZE_SHRINK_END,
+}
+
+
+enum BoxContainerAlignment {
+	BEGIN = 0,
+	CENTER = 1,
+	END = 2,
+}
 
 func set_nested_view(viewName: String, view: View):
 	if not nestedViews.has(viewName):
