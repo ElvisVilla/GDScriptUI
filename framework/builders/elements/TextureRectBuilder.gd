@@ -1,9 +1,9 @@
 extends BaseBuilder
 class_name TextureRectBuilder
 
-func _init(_texture):
+func _init(image_name: String = ""):
 	_content_node = TextureRect.new()
-	_content_node.texture = load(_texture)
+	_content_node.texture = load(image_name)
 
 # func texture(value) -> TextureRectBuilder:
 # 	_margin_node.texture = value

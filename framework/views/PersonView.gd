@@ -9,6 +9,17 @@ var person_name: String = "Lucy":
 		person_name = value
 		observe("person_name", person_name)
 
+enum Alignment {
+	LEFT = 0,
+	Center = 1,
+	Right = 2,
+}
+
+var alignment_value: Alignment = Alignment.Center:
+	set(value):
+		alignment_value = value
+		observe("alignment_value", alignment_value)
+
 # func _init(named: String) -> void:
 # 	person_name = named
 
@@ -17,10 +28,15 @@ func _ready() -> void:
 
 		VBox([
 
-			Label("Content View").fontSize(26).padding(),
+			Label("Content View")
+				.fontSize(26)
+				.align(alignment_value)
+				.size_flags(SizeFlags.EXPAND_FILL)
+				.padding(),
+
 			HBox([
+
 				Label(person_name)
-					.frame(100, 50)
 					.align(1),
 
 				Image("res://icon.svg")
@@ -34,19 +50,15 @@ func _ready() -> void:
 					.padding(),
 
 			])
-			.alignment(BoxContainerAlignment.END)
 			.padding()
 			.background(Color.BLACK.lightened(0.3), 10)
 			.padding(),
 
 			TextEdit(person_name if person_name != ""
-			 	else "Enter your name", "Enter your name")
-				.frame(500, 50)
+				else "Enter your name", "Enter your name")
+				.frame(50, 50)
 				.padding()
 				.background(Color.BLACK.lightened(0.3), 10)
 				.padding(),
-
 		])
-		.frame(500, 500)
-		.alignment(BoxContainerAlignment.BEGIN)
 	]

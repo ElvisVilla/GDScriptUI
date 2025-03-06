@@ -151,6 +151,17 @@ func padding(amount: int = 8) -> BaseBuilder:
 	
 # Set specific padding values
 func padding_specific(left: int = 0, top: int = 0, right: int = 0, bottom: int = 0) -> BaseBuilder:
+	if _use_panel and not _use_panel_margin:
+		# Automatically enable panel margin if padding is requested after background
+		_use_panel_margin = true
+		_setup_panel_margin_if_needed()
+		
+		_panel_margin_node.add_theme_constant_override("margin_left", left)
+		_panel_margin_node.add_theme_constant_override("margin_right", right)
+		_panel_margin_node.add_theme_constant_override("margin_top", top)
+		_panel_margin_node.add_theme_constant_override("margin_bottom", bottom)
+		return self
+
 	if not _use_margin:
 		# Automatically enable margin if padding is requested
 		_with_margin(true)
@@ -189,16 +200,16 @@ func frame(width: int = -1, height: int = -1, size_flags_h: int = View.SizeFlags
 		size_flags_v: int = View.SizeFlags.FILL) -> BaseBuilder:
 	if width >= 0 and height >= 0:
 		_get_parent_node().custom_minimum_size = Vector2(width, height)
-		_get_parent_node().size_flags_horizontal = size_flags_h
-		_get_parent_node().size_flags_vertical = size_flags_v
-	elif width >= 0:
-		_get_parent_node().custom_minimum_size = Vector2(width, -1)
-		_get_parent_node().size_flags_vertical = size_flags_v
-		_get_parent_node().size_flags_horizontal = size_flags_h
-	elif height >= 0:
-		_get_parent_node().custom_minimum_size = Vector2(-1, height)
-		_get_parent_node().size_flags_vertical = size_flags_v
-		_get_parent_node().size_flags_horizontal = size_flags_h
+	# 	_get_parent_node().size_flags_horizontal = size_flags_h
+	# 	_get_parent_node().size_flags_vertical = size_flags_v
+	# elif width >= 0:
+	# 	_get_parent_node().custom_minimum_size = Vector2(width, -1)
+	# 	_get_parent_node().size_flags_vertical = size_flags_v
+	# 	_get_parent_node().size_flags_horizontal = size_flags_h
+	# elif height >= 0:
+	# 	_get_parent_node().custom_minimum_size = Vector2(-1, height)
+	# 	_get_parent_node().size_flags_vertical = size_flags_v
+	# 	_get_parent_node().size_flags_horizontal = size_flags_h
 	
 	return self
 
@@ -208,4 +219,19 @@ func onMouseEntered(callback: Callable) -> BaseBuilder:
 
 func onMouseExited(callback: Callable) -> BaseBuilder:
 	_content_node.mouse_exited.connect(callback)
+	return self
+
+func onPressed(callback: Callable) -> BaseBuilder:
+	_content_node.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	if _content_node is Label:
+		_content_node.add_theme_color_override("font_color", Color(0.0, 0.0, 0.933).lightened(0.6))
+
+	var press_handler = func(event: InputEvent):
+		if event is InputEventMouseButton:
+			if event.button_index == MOUSE_BUTTON_LEFT and event.pressed == false:
+				# Only trigger on release inside the control
+				callback.call()
+
+	_content_node.gui_input.connect(press_handler)
 	return self

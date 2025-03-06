@@ -30,8 +30,10 @@ func VBox(children: Array = [], description: String = "") -> ContainerBuilder:
 	var builder = ContainerBuilder.new(children)
 	return builder.vertical(description)
 
-func Button(_text: String) -> ButtonBuilder:
-	return ButtonBuilder.new(_text)
+
+##Icon can be resized to fit the button
+func Button(_text: String, icon_name: String = "") -> ButtonBuilder:
+	return ButtonBuilder.new(_text, icon_name)
 
 func ForEach(items, action: Callable):
 	var result = []
@@ -43,7 +45,7 @@ func ForEach(items, action: Callable):
 	return HBox(result, "ForEach")
 
 
-func Image(texture = null) -> TextureRectBuilder:
+func Image(texture: String = "") -> TextureRectBuilder:
 	return TextureRectBuilder.new(texture)
 
 func Label(text: String = "") -> LabelBuilder:
@@ -51,6 +53,9 @@ func Label(text: String = "") -> LabelBuilder:
 
 func TextEdit(text: String, place_holder: String) -> TextEditBuilder:
 	return TextEditBuilder.new(text, place_holder)
+
+func Spacer() -> SpacerBuilder:
+	return SpacerBuilder.new()
 
 
 # Custom enums that mirror TextureRect's enums for better readability

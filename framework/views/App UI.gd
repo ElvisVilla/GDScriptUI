@@ -6,9 +6,6 @@ class_name AppUI
 		elements = value
 		observe("elements", value)
 
-const view_name = "App UI"
-var nestedContent: View
-
 # Use property setters for observed properties
 var showContent = false:
 	set(value):
@@ -34,7 +31,7 @@ var person_name = "John Doe":
 func _ready():
 	body = [
 		VBox([
-			Label(view_name).fontSize(30),
+			Label("App UI").fontSize(30),
 
 			VBox([
 
