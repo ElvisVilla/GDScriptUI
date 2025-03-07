@@ -1,9 +1,9 @@
 extends BaseBuilder
 class_name TextureRectBuilder
 
-func _init(_texture):
+func _init(image_name: String = ""):
 	_content_node = TextureRect.new()
-	_content_node.texture = load(_texture)
+	_content_node.texture = load(image_name)
 
 # func texture(value) -> TextureRectBuilder:
 # 	_margin_node.texture = value
@@ -15,8 +15,8 @@ func expand_mode(mode: View.ExpandMode) -> TextureRectBuilder:
 	_content_node.expand_mode = int(mode)
 	return self
 
-# Controls how the texture is displayed within its bounding rectangle
-# See StretchMode enum for detailed descriptions of each mode
+## Controls how the texture is displayed within its bounding rectangle
+## See StretchMode enum for detailed descriptions of each mode
 func stretch_mode(mode: View.StretchMode) -> TextureRectBuilder:
 	_content_node.stretch_mode = int(mode)
 	return self

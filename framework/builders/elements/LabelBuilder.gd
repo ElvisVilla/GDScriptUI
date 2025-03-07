@@ -1,6 +1,7 @@
 extends BaseBuilder
 class_name LabelBuilder
 
+@warning_ignore("shadowed_variable")
 func _init(text: String = ""):
 	_content_node = Label.new()
 	_content_node.text = text

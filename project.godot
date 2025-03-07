@@ -13,13 +13,21 @@ config_version=5
 config/name="DeclarativeUI Example"
 run/main_scene="uid://38xdxhygy60f"
 config/features=PackedStringArray("4.4", "Forward Plus")
+run/low_processor_mode=true
 config/icon="res://icon.svg"
+
+[autoload]
+
+ViewRegistryUI="*res://framework/view_compiler/ViewRegistry.gd"
 
 [display]
 
+window/size/viewport_width=648
+window/size/viewport_height=1152
 window/size/always_on_top=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/vsync/vsync_mode=0
 
 [input]
 
@@ -28,3 +36,7 @@ save={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":true,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true

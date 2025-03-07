@@ -6,9 +6,6 @@ class_name AppUI
 		elements = value
 		observe("elements", value)
 
-const view_name = "App UI"
-var nestedContent: View
-
 # Use property setters for observed properties
 var showContent = false:
 	set(value):
@@ -31,27 +28,25 @@ var person_name = "John Doe":
 		person_name = value
 		observe("person_name", value)
 
+func configure(to_concert_with: String = "", person_name: String = ""):
+	self.to_concert_with = to_concert_with
+	self.person_name = person_name
+
 func _ready():
 	body = [
-		VBox("App UI", [
-			Label(view_name).fontSize(30),
-			PersonView("Elvis"),
 
-			VBox("Labels", [
+		VBox([
+			Label("App UI").fontSize(30),
 
-				Label("Hello Mi Amor!")
-					.fontSize(20),
+			VBox([
 
-				Label("Te amo!")
-					.fontSize(15),
-
-				Label("Te amo mucho!")
-					.fontSize(15),
-
-				VBox("Toggles", [
+				VBox([
 
 					Label("Toggles")
 						.fontSize(20),
+
+					# PersonView(person_name),
+					# ViewTest("My Message"),
 
 					Button("Toggle Show Content 1")
 						.fontSize(15)
@@ -75,20 +70,20 @@ func _ready():
 			Label("This content is visible: " + str(showContent2)),
 
 			ForEach(elements,
-			func(element):
-				return VBox("Element", [
-					Label(element if element != null else "No value").fontSize(12),
-					Button(element if element != null else "No value").fontSize(12),
-					Button("Hello").fontSize(12),
+				func(element):
+					return VBox([
+						Label(element if element != null else "No value").fontSize(12),
+						Button(element if element != null else "No value").fontSize(12),
+						Button("Hello").fontSize(12),
 
-					Image("res://icon.svg")
-						.frame(50, 50, true)
-						.visible(count < 5),
+						Image("res://icon.svg")
+							.frame(50, 50, true)
+							.visible(count < 5),
 
-					Image("res://icon.svg")
-						.frame(50, 50, true)
-						.visible(count >= 7),
-				]),
+						Image("res://icon.svg")
+							.frame(50, 50, true)
+							.visible(count >= 7),
+					]),
 			),
 
 			ForEach(elements,
@@ -105,8 +100,12 @@ func _ready():
 		.padding(16)
 	]
 
+# func PersonView(named: String):
+# 	var person_view = load("res://framework/views/PersonView.gd").new()
+# 	return build_nested_view("PersonView", person_view.configure(named), self)
 
-func PersonView(named: String):
-	return build_nested_view("PersonView",
-	 load("res://framework/views/PersonView.gd").new(named),
-	  self)
+
+#This gets appended to View as a method
+# func %s%s:
+	#var element = load(%s).new()
+	#return build_nested_view(%s, element.%s, self)
