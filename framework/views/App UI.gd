@@ -28,8 +28,13 @@ var person_name = "John Doe":
 		person_name = value
 		observe("person_name", value)
 
+func configure(to_concert_with: String = "", person_name: String = ""):
+	self.to_concert_with = to_concert_with
+	self.person_name = person_name
+
 func _ready():
 	body = [
+
 		VBox([
 			Label("App UI").fontSize(30),
 
@@ -39,6 +44,9 @@ func _ready():
 
 					Label("Toggles")
 						.fontSize(20),
+
+					# PersonView(person_name),
+					# ViewTest("My Message"),
 
 					Button("Toggle Show Content 1")
 						.fontSize(15)
@@ -92,8 +100,12 @@ func _ready():
 		.padding(16)
 	]
 
+# func PersonView(named: String):
+# 	var person_view = load("res://framework/views/PersonView.gd").new()
+# 	return build_nested_view("PersonView", person_view.configure(named), self)
 
-func PersonView(named: String):
-	return build_nested_view("PersonView",
-	 load("res://framework/views/PersonView.gd").new(named),
-	  self)
+
+#This gets appended to View as a method
+# func %s%s:
+	#var element = load(%s).new()
+	#return build_nested_view(%s, element.%s, self)

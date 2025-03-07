@@ -1,7 +1,18 @@
 extends View
 class_name PersonView
 
+enum Alignment {
+	LEFT = 0,
+	Center = 1,
+	Right = 2,
+}
+
 var names: Array = ["Lucy", "Albert", "Niklas", "John", "Mariela"]
+
+var show_content: bool = true:
+	set(value):
+		show_content = value
+		observe("show_content", show_content)
 
 #Observed property
 var person_name: String = "Lucy":
@@ -9,24 +20,28 @@ var person_name: String = "Lucy":
 		person_name = value
 		observe("person_name", person_name)
 
-enum Alignment {
-	LEFT = 0,
-	Center = 1,
-	Right = 2,
-}
-
 var alignment_value: Alignment = Alignment.Center:
 	set(value):
 		alignment_value = value
 		observe("alignment_value", alignment_value)
 
-# func _init(named: String) -> void:
-# 	person_name = named
-
+func configure(person_name: String = "Lucy"):
+	self.person_name = person_name
+	
 func _ready() -> void:
 	body = [
 
 		VBox([
+
+			ForEach(range(0, 6),
+				func(i): return ViewTest().padding()
+			),
+
+			Button("Hide content")
+				.onPressed(func(): show_content = !show_content),
+
+			AppUI("Hello", "Lucy")
+				.visible(show_content),
 
 			Label("Content View")
 				.fontSize(26)

@@ -10,6 +10,7 @@ var nestedViews: Dictionary = {}
 func observe(property_name: String, value):
 	property_changed.emit(property_name, value)
 
+
 func build_ui(parent) -> ContainerBuilder:
 	#We se the child content here, we also must pass the view_owner to the child views
 	var box: ContainerBuilder = null
@@ -32,8 +33,8 @@ func VBox(children: Array = [], description: String = "") -> ContainerBuilder:
 
 
 ##Icon can be resized to fit the button
-func Button(_text: String, icon_name: String = "") -> ButtonBuilder:
-	return ButtonBuilder.new(_text, icon_name)
+func Button(_text: String) -> ButtonBuilder:
+	return ButtonBuilder.new(_text)
 
 func ForEach(items, action: Callable):
 	var result = []
@@ -115,3 +116,24 @@ func build_nested_view(viewName: String, view: View, parent: Node):
 	set_nested_view(viewName, view)
 	get_nested_view(viewName)._ready()
 	return get_nested_view(viewName).build_ui(parent)
+
+
+# BEGIN GENERATED VIEW FUNCTIONS
+
+func AppUI(to_concert_with, person_name):
+	var element = load("res://framework/views/App UI.gd").new()
+	element.configure(to_concert_with, person_name) #constructor call
+	return build_nested_view("App UI", element, self)
+
+
+func ViewTest():
+	var element = load("res://framework/views/ViewTest.gd").new()
+	return build_nested_view("ViewTest", element, self)
+
+
+func PersonView(person_name):
+	var element = load("res://framework/views/PersonView.gd").new()
+	element.configure(person_name) #constructor call
+	return build_nested_view("PersonView", element, self)
+
+# END GENERATED VIEW FUNCTIONS
