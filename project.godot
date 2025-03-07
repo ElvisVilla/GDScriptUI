@@ -13,7 +13,12 @@ config_version=5
 config/name="DeclarativeUI Example"
 run/main_scene="uid://38xdxhygy60f"
 config/features=PackedStringArray("4.4", "Forward Plus")
+run/low_processor_mode=true
 config/icon="res://icon.svg"
+
+[autoload]
+
+ViewRegistryUI="*res://framework/view_compiler/ViewRegistry.gd"
 
 [display]
 
@@ -22,6 +27,7 @@ window/size/viewport_height=1152
 window/size/always_on_top=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/vsync/vsync_mode=0
 
 [input]
 
