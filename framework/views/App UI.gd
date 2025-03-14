@@ -43,23 +43,27 @@ func _ready():
 				VBox([
 
 					Label("Toggles")
-						.fontSize(20),
+						.fontSize(20)
+						.padding(),
 
 					# PersonView(person_name),
 					# ViewTest("My Message"),
 
 					Button("Toggle Show Content 1")
 						.fontSize(15)
-						.onPressed(func(): showContent = !showContent),
+						.onPressed(func(): showContent = !showContent)
+						.padding(),
 
 					Button("Toggle Show Content 2")
 						.fontSize(15)
-						.onPressed(func(): showContent2 = !showContent2),
+						.onPressed(func(): showContent2 = !showContent2)
+						.padding(),
 
 					Button("Make Nested Content")
 						.fontSize(15)
+						.padding(),
 
-				]),
+				]).spacing(10),
 			]),
 
 			Button("Counter")
@@ -72,18 +76,22 @@ func _ready():
 			ForEach(elements,
 				func(element):
 					return VBox([
-						Label(element if element != null else "No value").fontSize(12),
-						Button(element if element != null else "No value").fontSize(12),
-						Button("Hello").fontSize(12),
+						Label(element if element != null else "No value").fontSize(12).padding(),
+						Button(element if element != null else "No value").fontSize(12).padding(),
+						Button("Hello").fontSize(12)
+							.padding(),
 
 						Image("res://icon.svg")
 							.frame(50, 50, true)
-							.visible(count < 5),
+							.visible(count < 5)
+							.padding(),
 
 						Image("res://icon.svg")
 							.frame(50, 50, true)
-							.visible(count >= 7),
-					]),
+							.visible(count >= 7)
+							.padding(),
+
+					]).spacing(10),
 			),
 
 			ForEach(elements,
@@ -94,9 +102,11 @@ func _ready():
 			ForEach(elements,
 			func(item):
 			return Button(item) \
-				.onPressed(func(): print("pressing " + item))),
+				.onPressed(func(): print("pressing " + item)) \
+				.padding()),
 
 		])
+		.spacing(10)
 		.padding(16)
 	]
 

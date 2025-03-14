@@ -20,11 +20,11 @@ func fontSize(font_size: int) -> LabelBuilder:
 	_content_node.add_theme_font_size_override("font_size", font_size)
 	return self
 
-func align(horizontal: int = HORIZONTAL_ALIGNMENT_LEFT, vertical: int = VERTICAL_ALIGNMENT_CENTER) -> LabelBuilder:
+func align(horizontal: View.TextAlignment = View.TextAlignment.LEADING, vertical: View.TextAlignment = View.TextAlignment.CENTER) -> LabelBuilder:
 	_content_node.horizontal_alignment = horizontal
 	_content_node.vertical_alignment = vertical
 	return self
 
-func autowrap(enable: bool = true) -> LabelBuilder:
-	_content_node.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if enable else TextServer.AUTOWRAP_OFF
+func autowrap(mode: TextServer.AutowrapMode = TextServer.AUTOWRAP_WORD) -> LabelBuilder:
+	_content_node.autowrap_mode = mode
 	return self

@@ -22,8 +22,8 @@ ViewRegistryUI="*res://framework/view_compiler/ViewRegistry.gd"
 
 [display]
 
-window/size/viewport_width=648
-window/size/viewport_height=1152
+window/size/viewport_width=900
+window/size/viewport_height=900
 window/size/always_on_top=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
@@ -40,3 +40,8 @@ save={
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

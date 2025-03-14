@@ -7,6 +7,9 @@ enum Alignment {
 	Right = 2,
 }
 
+var another_names = ["Hola que tal", "Soy un texto\n largo", "Tengo algunas palabras",
+ "Martha camina por la calle", "John anda por la calle"]
+
 var names: Array = ["Lucy", "Albert", "Niklas", "John", "Mariela"]
 
 var show_content: bool = true:
@@ -28,31 +31,24 @@ var alignment_value: Alignment = Alignment.Center:
 func configure(person_name: String = "Lucy"):
 	self.person_name = person_name
 	
-func _ready() -> void:
+func _ready():
 	body = [
 
 		VBox([
 
-			ForEach(range(0, 6),
-				func(i): return ViewTest().padding()
-			),
-
-			Button("Hide content")
-				.onPressed(func(): show_content = !show_content),
-
-			AppUI("Hello", "Lucy")
-				.visible(show_content),
-
+			Label(another_names[0] + " " + another_names[1] + " " + another_names[2] + " " + another_names[3] + " " + another_names[4]),
+			Label(another_names[1]),
+			Label(another_names[2]),
+			Label(another_names[3]),
+			Label(another_names[4]),
 			Label("Content View")
 				.fontSize(26)
-				.align(alignment_value)
-				.size_flags(SizeFlags.EXPAND_FILL)
+				.size_flags(SizeFlags.EXPAND)
 				.padding(),
 
 			HBox([
 
-				Label(person_name)
-					.align(1),
+				Label(person_name),
 
 				Image("res://icon.svg")
 					.expand_mode(ExpandMode.IGNORE_SIZE)
@@ -63,7 +59,6 @@ func _ready() -> void:
 				Button("Random Name")
 					.onPressed(func(): person_name = names.pick_random())
 					.padding(),
-
 			])
 			.padding()
 			.background(Color.BLACK.lightened(0.3), 10)
@@ -76,4 +71,7 @@ func _ready() -> void:
 				.background(Color.BLACK.lightened(0.3), 10)
 				.padding(),
 		])
+		.padding()
+		.background(Color.BLACK.lightened(0.3), 10)
+		.padding(),
 	]

@@ -2,7 +2,6 @@ extends Node
 class_name View
 
 signal property_changed(property_name, new_value)
-@export var view_owner: Node
 var body: Array = []
 var nestedViews: Dictionary = {}
 
@@ -15,8 +14,8 @@ func build_ui(parent) -> ContainerBuilder:
 	#We se the child content here, we also must pass the view_owner to the child views
 	var box: ContainerBuilder = null
 	if body.size() > 0:
-		box = VBox(body, name)._in_node(parent)
-		view_owner = parent
+		box = VBox(body, name).padding(16)._in_node(parent)
+		# view_owner = parent
 		print("build_ui on parent: ", parent.name)
 		return box
 	
@@ -52,6 +51,7 @@ func Image(texture: String = "") -> TextureRectBuilder:
 func Label(text: String = "") -> LabelBuilder:
 	return LabelBuilder.new(text)
 
+##Editor for Text
 func TextEdit(text: String, place_holder: String) -> TextEditBuilder:
 	return TextEditBuilder.new(text, place_holder)
 
@@ -97,6 +97,14 @@ enum SizeFlags {
 	SHRINK_END = Control.SIZE_SHRINK_END,
 }
 
+enum TextAlignment {
+	TRAILING = 0,
+	CENTER = 1,
+	LEADING = 2,
+	TOP = 0,
+	BOTTOM = 2,
+}
+
 
 enum BoxContainerAlignment {
 	BEGIN = 0,
@@ -123,17 +131,22 @@ func build_nested_view(viewName: String, view: View, parent: Node):
 func AppUI(to_concert_with, person_name):
 	var element = load("res://framework/views/App UI.gd").new()
 	element.configure(to_concert_with, person_name) #constructor call
-	return build_nested_view("App UI", element, self)
+	return build_nested_view("AppUI", element, self)
 
 
-func ViewTest():
-	var element = load("res://framework/views/ViewTest.gd").new()
-	return build_nested_view("ViewTest", element, self)
+func OtherView():
+	var element = load("res://examples/OtherView.gd").new()
+	return build_nested_view("OtherView", element, self)
 
 
 func PersonView(person_name):
 	var element = load("res://framework/views/PersonView.gd").new()
 	element.configure(person_name) #constructor call
 	return build_nested_view("PersonView", element, self)
+
+
+func ViewTest():
+	var element = load("res://framework/views/ViewTest.gd").new()
+	return build_nested_view("ViewTest", element, self)
 
 # END GENERATED VIEW FUNCTIONS

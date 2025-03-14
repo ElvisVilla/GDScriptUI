@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://dyrw727ts3xo1"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://dyrw727ts3xo1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bxmjo"]
 bg_color = Color(0.137255, 0.137255, 0.137255, 1)
@@ -55,9 +55,37 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iv5sr"]
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j0b0a"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hrafa"]
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [resource]
 Button/styles/focus = SubResource("StyleBoxFlat_bxmjo")
 Button/styles/hover = SubResource("StyleBoxFlat_4thnd")
 Button/styles/normal = SubResource("StyleBoxFlat_b45lt")
 Button/styles/pressed = SubResource("StyleBoxFlat_dl7rq")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_2yar2")
+TextEdit/styles/focus = SubResource("StyleBoxFlat_iv5sr")
+TextEdit/styles/normal = SubResource("StyleBoxFlat_j0b0a")
+TextEdit/styles/read_only = SubResource("StyleBoxFlat_hrafa")
