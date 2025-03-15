@@ -43,7 +43,7 @@ func _ready():
 			Label(another_names[4]),
 			Label("Content View")
 				.fontSize(26)
-				.size_flags(SizeFlags.EXPAND)
+				.sizeFlags(SizeFlags.EXPAND)
 				.padding(),
 
 			HBox([
@@ -51,8 +51,8 @@ func _ready():
 				Label(person_name),
 
 				Image("res://icon.svg")
-					.expand_mode(ExpandMode.IGNORE_SIZE)
-					.stretch_mode(StretchMode.KEEP_ASPECT_CENTERED)
+					.expandMode(ExpandMode.IGNORE_SIZE)
+					.stretchMode(StretchMode.KEEP_ASPECT_CENTERED)
 					.frame(50, 50)
 					.visible(person_name == "Lucy"),
 

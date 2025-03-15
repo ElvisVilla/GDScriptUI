@@ -7,6 +7,7 @@ func _init(_text: String):
 	_content_node = Button.new()
 	_content_node.name = _text + " Button"
 	_content_node.text = _text
+	# shrinkHorizontal()
 
 func text(value: String) -> ButtonBuilder:
 	_content_node.text = value

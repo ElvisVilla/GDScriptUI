@@ -1,6 +1,7 @@
 extends RefCounted
 class_name BaseBuilder
 
+var _explicit_modifiers = {}
 var _content_node: Control # The actual control being built (Button, Label, etc.)
 var _margin_node: MarginContainer # Optional margin wrapper
 var _panel_node: PanelContainer # Optional panel background wrapper
@@ -122,7 +123,7 @@ func tooltip(text: String) -> BaseBuilder:
 	return self
 
 # Mouse filter
-func mouse_filter(filter: Control.MouseFilter) -> BaseBuilder:
+func mouseFilter(filter: Control.MouseFilter) -> BaseBuilder:
 	_content_node.mouse_filter = filter
 	return self
 
@@ -147,10 +148,13 @@ func padding(amount: int = 8) -> BaseBuilder:
 	_margin_node.add_theme_constant_override("margin_right", amount)
 	_margin_node.add_theme_constant_override("margin_top", amount)
 	_margin_node.add_theme_constant_override("margin_bottom", amount)
+
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.FILL
+	_get_parent_node().size_flags_vertical = View.SizeFlags.FILL
 	return self
 	
 # Set specific padding values
-func padding_specific(left: int = 0, top: int = 0, right: int = 0, bottom: int = 0) -> BaseBuilder:
+func paddingSpecific(left: int = 0, top: int = 0, right: int = 0, bottom: int = 0) -> BaseBuilder:
 	if _use_panel and not _use_panel_margin:
 		# Automatically enable panel margin if padding is requested after background
 		_use_panel_margin = true
@@ -172,10 +176,65 @@ func padding_specific(left: int = 0, top: int = 0, right: int = 0, bottom: int =
 	_margin_node.add_theme_constant_override("margin_bottom", bottom)
 	return self
 
-func size_flags(size_flags_h: int = View.SizeFlags.FILL, size_flags_v: int = View.SizeFlags.FILL) -> BaseBuilder:
+# region SizeFlags Modifiers
+func sizeFlags(size_flags_h: int = View.SizeFlags.FILL, size_flags_v: int = View.SizeFlags.FILL) -> BaseBuilder:
 	_get_parent_node().size_flags_horizontal = size_flags_h
 	_get_parent_node().size_flags_vertical = size_flags_v
 	return self
+
+func expand() -> BaseBuilder:
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND
+	_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND
+	return self
+
+func fill() -> BaseBuilder:
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.FILL
+	_get_parent_node().size_flags_vertical = View.SizeFlags.FILL
+	return self
+
+func expandFill() -> BaseBuilder:
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND_FILL
+	_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND_FILL
+	return self
+
+func shrink(mode: View.SizeFlags = View.SizeFlags.SHRINK_BEGIN) -> BaseBuilder:
+	_get_parent_node().size_flags_horizontal = mode
+	_get_parent_node().size_flags_vertical = mode
+	return self
+
+func expandHorizontal() -> BaseBuilder:
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND
+	return self
+
+func expandVertical() -> BaseBuilder:
+	_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND
+	return self
+
+func fillHorizontal() -> BaseBuilder:
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.FILL
+	return self
+
+func fillVertical() -> BaseBuilder:
+	_get_parent_node().size_flags_vertical = View.SizeFlags.FILL
+	return self
+
+func expandFillHorizontal() -> BaseBuilder:
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND_FILL
+	return self
+
+func expandFillVertical() -> BaseBuilder:
+	_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND_FILL
+	return self
+
+func shrinkHorizontal(mode: View.SizeFlags = View.SizeFlags.SHRINK_BEGIN) -> BaseBuilder:
+	_get_parent_node().size_flags_horizontal = mode
+	return self
+
+func shrinkVertical(mode: View.SizeFlags = View.SizeFlags.SHRINK_BEGIN) -> BaseBuilder:
+	_get_parent_node().size_flags_vertical = mode
+	return self
+
+# endregion
 
 # Customize panel background color
 func background(color: Color, corner_radius: int = 0) -> BaseBuilder:
@@ -234,4 +293,11 @@ func onPressed(callback: Callable) -> BaseBuilder:
 				callback.call()
 
 	_content_node.gui_input.connect(press_handler)
+	return self
+
+func _has_explicit_modifier(modifier: String) -> bool:
+	return _explicit_modifiers.has(modifier)
+
+func _add_explicit_modifier(modifier: String, value: bool) -> BaseBuilder:
+	_explicit_modifiers[modifier] = value
 	return self

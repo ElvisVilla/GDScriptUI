@@ -6,6 +6,7 @@ func _init(text: String = ""):
 	_content_node = Label.new()
 	_content_node.text = text
 	_content_node.name = text + "_label"
+	shrinkHorizontal()
 
 # func in_node(parent: Node) -> LabelBuilder:
 # 	parent.add_child(_margin_node)
@@ -18,6 +19,7 @@ func text(value: String) -> LabelBuilder:
 
 func fontSize(font_size: int) -> LabelBuilder:
 	_content_node.add_theme_font_size_override("font_size", font_size)
+	_add_explicit_modifier("fontSize", font_size)
 	return self
 
 func align(horizontal: View.TextAlignment = View.TextAlignment.LEADING, vertical: View.TextAlignment = View.TextAlignment.CENTER) -> LabelBuilder:

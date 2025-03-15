@@ -68,3 +68,33 @@ func spacing(value: int) -> ContainerBuilder:
 func alignment(alignment: View.BoxContainerAlignment) -> ContainerBuilder:
 	_content_node.set("alignment", alignment)
 	return self
+
+func expand() -> ContainerBuilder:
+	for child in _children:
+		child._get_parent_node().set("size_flags_horizontal", View.SizeFlags.EXPAND)
+		child._get_parent_node().set("size_flags_vertical", View.SizeFlags.EXPAND)
+	return self
+
+func expandFill() -> ContainerBuilder:
+	_get_parent_node().set("size_flags_horizontal", View.SizeFlags.EXPAND_FILL)
+	_get_parent_node().set("size_flags_vertical", View.SizeFlags.EXPAND_FILL)
+
+	for child in _children:
+		print("child name: ", child.name)
+		child._get_parent_node().set("size_flags_horizontal", View.SizeFlags.EXPAND_FILL)
+		child._get_parent_node().set("size_flags_vertical", View.SizeFlags.EXPAND_FILL)
+	return self
+
+func fontSize(font_size: int) -> ContainerBuilder:
+	for child in _children:
+		if child._has_explicit_modifier("fontSize"):
+			continue
+		
+		print("Propagating font size to child: ", child._content_node.name)
+
+		if child is ContainerBuilder and child._children.size() > 0:
+			child.fontSize(font_size)
+
+		if child.has_method("fontSize"):
+			child.fontSize(font_size)
+	return self

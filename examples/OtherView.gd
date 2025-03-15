@@ -17,29 +17,19 @@ func _ready():
 	body = [
 		VBox([
 			Label("Project Design")
-				.fontSize(48),
-
-			Label("Description:"),
-
-			TextEdit(description, "Write Here")
-				.wordWrap(true)
-				.fontSize(20)
-				#Size flags needs to go at the end of the chain
-				.size_flags(View.SizeFlags.EXPAND_FILL, View.SizeFlags.EXPAND_FILL),
-
-			Button("Submit")
-				.onPressed(func(): number += 1)
-				.padding(), # Padding makes a margin container
-				# .size_flags(View.SizeFlags.FILL, View.SizeFlags.FILL),
-			Spacer(),
-
+				.fontSize(24)
+				.padding(10),
+			
 			HBox([
-				Button("Submit")
-				.onPressed(func(): number += 1)
-				.padding(),
+				Label("Description 1"),
+				Label("Description 2"),
+				Label("Description 3"),
+			])
+			.spacing(20),
 
-				Spacer(),
+			VBox([
+
 			]),
 		])
-		.size_flags(View.SizeFlags.EXPAND_FILL, View.SizeFlags.EXPAND_FILL),
+		.fontSize(38),
 	]
