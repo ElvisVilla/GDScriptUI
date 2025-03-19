@@ -14,10 +14,11 @@ func build_ui(parent) -> ContainerBuilder:
 	#We se the child content here, we also must pass the view_owner to the child views
 	var box: ContainerBuilder = null
 	if body.size() > 0:
-		box = VBox(body, name).padding(16)._in_node(parent)
-		# view_owner = parent
-		print("build_ui on parent: ", parent.name)
-		return box
+		# box = VBox(body, name).padding(16)._in_node(parent)
+		# # view_owner = parent
+		# print("build_ui on parent: ", parent.name)
+		# return box
+		return body[0].padding(16)._in_node(parent)
 	
 	return null
 
@@ -88,6 +89,15 @@ enum StretchMode {
 	KEEP_ASPECT_COVERED = 6,
 }
 
+##The SizeFlags constants goes like this, you could also use integers values
+## 	SizeFlags {
+## 		0 = SHRINK_BEGIN
+## 		1 = FILL
+## 		2 = EXPAND
+## 		3 = EXPAND_FILL 
+## 		4 = SHRINK_CENTER
+## 		5 = SHRINK_END
+## 	}
 enum SizeFlags {
 	SHRINK_BEGIN = Control.SIZE_SHRINK_BEGIN,
 	FILL = Control.SIZE_FILL,

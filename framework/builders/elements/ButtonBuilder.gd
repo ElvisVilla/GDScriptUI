@@ -7,7 +7,8 @@ func _init(_text: String):
 	_content_node = Button.new()
 	_content_node.name = _text + " Button"
 	_content_node.text = _text
-	# shrinkHorizontal()
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.SHRINK_CENTER
+	_get_parent_node().size_flags_vertical = View.SizeFlags.SHRINK_CENTER
 
 func text(value: String) -> ButtonBuilder:
 	_content_node.text = value
@@ -15,6 +16,7 @@ func text(value: String) -> ButtonBuilder:
 
 func fontSize(font_size: int) -> ButtonBuilder:
 	_content_node.add_theme_font_size_override("font_size", font_size)
+	_add_explicit_modifier("fontSize", font_size)
 	return self
 
 func onPressed(callback: Callable) -> ButtonBuilder:

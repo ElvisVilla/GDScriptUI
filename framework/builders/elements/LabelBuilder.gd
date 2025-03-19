@@ -6,7 +6,7 @@ func _init(text: String = ""):
 	_content_node = Label.new()
 	_content_node.text = text
 	_content_node.name = text + "_label"
-	shrinkHorizontal()
+	_get_parent_node().size_flags_horizontal = View.SizeFlags.SHRINK_CENTER
 
 # func in_node(parent: Node) -> LabelBuilder:
 # 	parent.add_child(_margin_node)

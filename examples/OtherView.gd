@@ -16,20 +16,44 @@ var number: int = 0:
 func _ready():
 	body = [
 		VBox([
-			Label("Project Design")
-				.fontSize(24)
-				.padding(10),
-			
-			HBox([
-				Label("Description 1"),
-				Label("Description 2"),
-				Label("Description 3"),
-			])
-			.spacing(20),
 
-			VBox([
+			HBox([
+				HBox([
+
+					Button("UpdateUI")
+						.onPressed(func(): number += 1)
+						.expandFillVertical(),
+
+					Button("YAA")
+						.padding(),
+
+					Button("YOO")
+						.padding(10),
+
+				], "Buttons Horizontal")
+				.fontSize(18)
+				.background(Color.BLACK.lightened(0.2), 10),
+
+				HBox([
+					Label("Lable 1"),
+
+					Label("Label 2"),
+				]),
 
 			]),
-		])
-		.fontSize(38),
+			
+			Label("Project Design")
+				.fontSize(24)
+				.padding(2),
+			
+			HBox([
+				Label("Description 1").padding(1),
+				Label("Description 2").padding(1),
+				Label("Description 3").padding(1),
+			], "Labels container")
+			.spacing(20),
+
+		], "VBox outermost container in Body")
+			.fontSize(38)
+			.background(Color.BLACK.lightened(0.3), 10),
 	]
