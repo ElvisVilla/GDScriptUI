@@ -11,13 +11,7 @@ func observe(property_name: String, value):
 
 
 func build_ui(parent) -> ContainerBuilder:
-	#We se the child content here, we also must pass the view_owner to the child views
-	var box: ContainerBuilder = null
 	if body.size() > 0:
-		# box = VBox(body, name).padding(16)._in_node(parent)
-		# # view_owner = parent
-		# print("build_ui on parent: ", parent.name)
-		# return box
 		return body[0].padding(16)._in_node(parent)
 	
 	return null
@@ -32,7 +26,8 @@ func VBox(children: Array = [], description: String = "") -> ContainerBuilder:
 	return builder.vertical(description)
 
 
-##Icon can be resized to fit the button
+# Button cant define icon because icon sizing doesnt work properly as TextureRect sizing
+# For adding icon inside of a Button is better to wrap a Image and Button inside of a BoxContainer 
 func Button(_text: String) -> ButtonBuilder:
 	return ButtonBuilder.new(_text)
 
@@ -121,6 +116,9 @@ enum BoxContainerAlignment {
 	CENTER = 1,
 	END = 2,
 }
+
+const Infinity = -1
+const FitContent = -2
 
 func set_nested_view(viewName: String, view: View):
 	if not nestedViews.has(viewName):

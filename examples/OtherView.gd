@@ -18,31 +18,41 @@ func _ready():
 		VBox([
 
 			HBox([
+
 				HBox([
 
 					Button("UpdateUI")
-						.onPressed(func(): number += 1)
-						.expandFillVertical(),
+						.onPressed(func(): number += 1),
 
 					Button("YAA")
-						.padding(),
+						# .frame(Infinity, Infinity)
+						.tooltip("This is a tooltip"),
 
-					Button("YOO")
-						.padding(10),
+					Button("YOO"),
+
+					VBox([
+						Label("Hello")
+							.align(TextAlignment.CENTER, TextAlignment.TOP),
+					]),
 
 				], "Buttons Horizontal")
 				.fontSize(18)
-				.background(Color.BLACK.lightened(0.2), 10),
+				.background(Color.BLACK.lightened(0.2), 10)
+				.frame(Infinity, Infinity),
 
 				HBox([
-					Label("Lable 1"),
+					Label("First label that has some text to make something popup")
+						.autowrap(TextServer.AUTOWRAP_ARBITRARY),
 
-					Label("Label 2"),
-				]),
+					Label("Long description to see how this works")
+					.autowrap(TextServer.AUTOWRAP_ARBITRARY),
+				])
+				.frame(Infinity, Infinity),
 
 			]),
 			
 			Label("Project Design")
+				.background(Color.BLACK.lightened(0.4), 10)
 				.fontSize(24)
 				.padding(2),
 			

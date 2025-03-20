@@ -82,12 +82,12 @@ func _ready():
 							.padding(),
 
 						Image("res://icon.svg")
-							.frame(50, 50, true)
+							# .frame(50, 50, true)
 							.visible(count < 5)
 							.padding(),
 
 						Image("res://icon.svg")
-							.frame(50, 50, true)
+							# .frame(50, 50, true)
 							.visible(count >= 7)
 							.padding(),
 

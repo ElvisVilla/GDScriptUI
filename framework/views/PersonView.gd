@@ -43,7 +43,6 @@ func _ready():
 			Label(another_names[4]),
 			Label("Content View")
 				.fontSize(26)
-				.sizeFlags(SizeFlags.EXPAND)
 				.padding(),
 
 			HBox([
@@ -51,9 +50,8 @@ func _ready():
 				Label(person_name),
 
 				Image("res://icon.svg")
-					.expandMode(ExpandMode.IGNORE_SIZE)
-					.stretchMode(StretchMode.KEEP_ASPECT_CENTERED)
-					.frame(50, 50)
+					.resize()
+					.frame(40, 40)
 					.visible(person_name == "Lucy"),
 
 				Button("Random Name")
@@ -65,11 +63,11 @@ func _ready():
 			.padding(),
 
 			TextEdit(person_name if person_name != ""
-				else "Enter your name", "Enter your name")
-				.frame(50, 50)
+				else "No name typed", "Enter your name")
 				.padding()
 				.background(Color.BLACK.lightened(0.3), 10)
-				.padding(),
+				.padding()
+				.frame(Infinity, Infinity),
 		])
 		.padding()
 		.background(Color.BLACK.lightened(0.3), 10)

@@ -132,7 +132,7 @@ func mouseFilter(filter: Control.MouseFilter) -> BaseBuilder:
 	_content_node.mouse_filter = filter
 	return self
 
-# 
+
 func padding(amount: int = 8) -> BaseBuilder:
 	if _use_panel and not _use_panel_margin:
 		# Automatically enable panel margin if padding is requested after background
@@ -153,7 +153,6 @@ func padding(amount: int = 8) -> BaseBuilder:
 	_margin_node.add_theme_constant_override("margin_right", amount)
 	_margin_node.add_theme_constant_override("margin_top", amount)
 	_margin_node.add_theme_constant_override("margin_bottom", amount)
-
 
 	return self
 	
@@ -189,96 +188,10 @@ func paddingSpecific(left: int = 0, top: int = 0, right: int = 0, bottom: int = 
 ## 		SHRINK_CENTER = 4,
 ## 		SHRINK_END = 5,
 ## 	}
-func sizeFlags(size_flags_h := View.SizeFlags.FILL, size_flags_v := View.SizeFlags.FILL) -> BaseBuilder:
+func _sizeFlags(size_flags_h := View.SizeFlags.FILL, size_flags_v := View.SizeFlags.FILL) -> BaseBuilder:
 	_get_parent_node().size_flags_horizontal = size_flags_h
 	_get_parent_node().size_flags_vertical = size_flags_v
 	return self
-
-func expand() -> BaseBuilder:
-	_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND
-	_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND
-	_explicit_modifiers["sizeFlags"] = "expand"
-	return self
-
-func fill() -> BaseBuilder:
-	_get_parent_node().size_flags_horizontal = View.SizeFlags.FILL
-	_get_parent_node().size_flags_vertical = View.SizeFlags.FILL
-	_explicit_modifiers["sizeFlags"] = "fill"
-	return self
-
-func expandFill() -> BaseBuilder:
-	_content_node.size_flags_horizontal = View.SizeFlags.FILL
-	_content_node.size_flags_vertical = View.SizeFlags.FILL
-
-	if _panel_margin_node:
-		_panel_margin_node.size_flags_horizontal = View.SizeFlags.FILL
-		_panel_margin_node.size_flags_vertical = View.SizeFlags.FILL
-
-	if _panel_node:
-		_panel_node.size_flags_horizontal = View.SizeFlags.FILL
-		_panel_node.size_flags_vertical = View.SizeFlags.FILL
-	
-	if _margin_node:
-		_margin_node.size_flags_horizontal = View.SizeFlags.FILL
-		_margin_node.size_flags_vertical = View.SizeFlags.FILL
-
-	_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND_FILL
-	_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND_FILL
-
-	#If a containerBuilder call expandFill we are doing a recursive call
-	_explicit_modifiers["sizeFlags"] = "expandFill"
-
-	return self
-
-## Shrink Center by Default 
-func shrink(mode: View.SizeFlags = View.SizeFlags.SHRINK_CENTER) -> BaseBuilder:
-	_get_parent_node().size_flags_horizontal = mode
-	_get_parent_node().size_flags_vertical = mode
-	# _explicit_modifiers["sizeFlags"] = "shrink"
-	return self
-
-#TODO: Implement parent expandHorizontal to fit content, similar
-func expandHorizontal() -> BaseBuilder:
-	_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND
-	_explicit_modifiers["sizeFlags"] = "expandHorizontal"
-	return self
-
-func expandVertical() -> BaseBuilder:
-	_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND
-	_explicit_modifiers["sizeFlags"] = "expandVertical"
-	return self
-
-func fillHorizontal() -> BaseBuilder:
-	_get_parent_node().size_flags_horizontal = View.SizeFlags.FILL
-	_explicit_modifiers["sizeFlags"] = "fillHorizontal"
-	return self
-
-func fillVertical() -> BaseBuilder:
-	_get_parent_node().size_flags_vertical = View.SizeFlags.FILL
-	_explicit_modifiers["sizeFlags"] = "fillVertical"
-	return self
-
-func expandFillHorizontal() -> BaseBuilder:
-	_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND_FILL
-	_explicit_modifiers["sizeFlags"] = "expandFillHorizontal"
-	return self
-
-func expandFillVertical() -> BaseBuilder:
-	_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND_FILL
-	_explicit_modifiers["sizeFlags"] = "expandFillVertical"
-	return self
-
-func shrinkHorizontal(mode: View.SizeFlags = View.SizeFlags.SHRINK_BEGIN) -> BaseBuilder:
-	_get_parent_node().size_flags_horizontal = mode
-	_explicit_modifiers["sizeFlags"] = "shrinkHorizontal"
-	return self
-
-func shrinkVertical(mode: View.SizeFlags = View.SizeFlags.SHRINK_BEGIN) -> BaseBuilder:
-	_get_parent_node().size_flags_vertical = mode
-	_explicit_modifiers["sizeFlags"] = "shrinkVertical"
-	return self
-
-# endregion
 
 # Customize panel background color
 func background(color: Color, corner_radius: int = 0) -> BaseBuilder:
@@ -298,28 +211,52 @@ func background(color: Color, corner_radius: int = 0) -> BaseBuilder:
 	return self
 
 #TODO: Test frame modifier for each control View
-func frame(width: int = -1, height: int = -1, size_flags_h: int = View.SizeFlags.FILL,
-		size_flags_v: int = View.SizeFlags.FILL) -> BaseBuilder:
-	if width >= 0 and height >= 0:
+func frame(width: int = View.FitContent, height: int = View.FitContent) -> BaseBuilder:
+	# Fit content is by default the so no need to change anything.
+	if width == View.FitContent and height == View.FitContent:
+		return
+
+	# if either width or height is View.Infinity we then expand and set explicit modifier for parent to respect this sizing.
+	if width == View.Infinity:
+		_content_node.size_flags_horizontal = View.SizeFlags.FILL
+
+		if _margin_node:
+			_margin_node.size_flags_horizontal = View.SizeFlags.FILL
+
+		if _panel_node:
+			_panel_node.size_flags_horizontal = View.SizeFlags.FILL
+
+		if _panel_margin_node:
+			_panel_node.size_flags_horizontal = View.SizeFlags.FILL
+
+		_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND_FILL
+		_explicit_modifiers["expand_horizontal"] = true
+
+	if height == View.Infinity:
+		_content_node.size_flags_vertical = View.SizeFlags.FILL
+
+		if _margin_node:
+			_margin_node.size_flags_vertical = View.SizeFlags.FILL
+
+		if _panel_node:
+			_panel_node.size_flags_vertical = View.SizeFlags.FILL
+
+		if _panel_margin_node:
+			_panel_node.size_flags_vertical = View.SizeFlags.FILL
+
+		_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND_FILL
+		_explicit_modifiers["expand_vertical"] = true
+
+	# custom size only modify the element that call frame, and because we are following FitContent (shrink_center) design
+	# the parent will grow based on the custom_minimum_size of the childs
+	if width >= 0:
 		_get_parent_node().size_flags_horizontal = View.SizeFlags.SHRINK_CENTER
+		_get_parent_node().custom_minimum_size.x = width
+
+	if height >= 0:
 		_get_parent_node().size_flags_vertical = View.SizeFlags.SHRINK_CENTER
+		_get_parent_node().custom_minimum_size.y = height
 
-		_get_parent_node().custom_minimum_size = Vector2(width, height)
-
-		#Analyze if this is needed ->
-
-
-	# 	_get_parent_node().size_flags_horizontal = size_flags_h
-	# 	_get_parent_node().size_flags_vertical = size_flags_v
-	# elif width >= 0:
-	# 	_get_parent_node().custom_minimum_size = Vector2(width, -1)
-	# 	_get_parent_node().size_flags_vertical = size_flags_v
-	# 	_get_parent_node().size_flags_horizontal = size_flags_h
-	# elif height >= 0:
-	# 	_get_parent_node().custom_minimum_size = Vector2(-1, height)
-	# 	_get_parent_node().size_flags_vertical = size_flags_v
-	# 	_get_parent_node().size_flags_horizontal = size_flags_h
-	
 	return self
 
 func onMouseEntered(callback: Callable) -> BaseBuilder:
