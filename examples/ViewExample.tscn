@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://38xdxhygy60f"]
+[gd_scene load_steps=7 format=3 uid="uid://38xdxhygy60f"]
 
 [ext_resource type="Theme" uid="uid://dyrw727ts3xo1" path="res://framework/themes/UITheme.tres" id="1_kca8q"]
 [ext_resource type="Script" uid="uid://b4v0e84lkl5mn" path="res://framework/core/UIRoot.gd" id="2_byw35"]
+[ext_resource type="Script" uid="uid://b68jnyc3qhex4" path="res://examples/SimpleView.gd" id="4_byw35"]
 [ext_resource type="Script" uid="uid://bfppvubc2lb0e" path="res://examples/OtherView.gd" id="4_kca8q"]
+[ext_resource type="Script" uid="uid://b30g2eclrqovq" path="res://examples/ContentView.gd" id="5_byw35"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u061t"]
 
@@ -17,8 +19,16 @@ size_flags_vertical = 3
 theme = ExtResource("1_kca8q")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_u061t")
 script = ExtResource("2_byw35")
-content = NodePath("OtherView")
+content = NodePath("ContentView")
 
 [node name="OtherView" type="Node" parent="."]
 script = ExtResource("4_kca8q")
 metadata/_custom_type_script = "uid://bfppvubc2lb0e"
+
+[node name="SimpleView" type="Node" parent="."]
+script = ExtResource("4_byw35")
+metadata/_custom_type_script = "uid://b68jnyc3qhex4"
+
+[node name="ContentView" type="Node" parent="."]
+script = ExtResource("5_byw35")
+metadata/_custom_type_script = "uid://b30g2eclrqovq"

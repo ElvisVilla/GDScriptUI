@@ -32,7 +32,7 @@ func onHover(callback: Callable) -> ButtonBuilder:
 # 	_content_node.add_theme_stylebox_override("normal", button_style_box)
 # 	return self
 
-func corner_radius(radius: int) -> ButtonBuilder:
+func cornerRadius(radius: int) -> ButtonBuilder:
 	button_style_box.set("corner_radius_top_left", radius)
 	button_style_box.set("corner_radius_top_right", radius)
 	button_style_box.set("corner_radius_bottom_left", radius)
