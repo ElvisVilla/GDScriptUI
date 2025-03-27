@@ -143,6 +143,9 @@ func padding(amount: int = 8) -> BaseBuilder:
 		_panel_margin_node.add_theme_constant_override("margin_right", amount)
 		_panel_margin_node.add_theme_constant_override("margin_top", amount)
 		_panel_margin_node.add_theme_constant_override("margin_bottom", amount)
+
+		_outer_frame_if_needed()
+
 		return self
 	
 	if not _use_margin:
@@ -153,6 +156,8 @@ func padding(amount: int = 8) -> BaseBuilder:
 	_margin_node.add_theme_constant_override("margin_right", amount)
 	_margin_node.add_theme_constant_override("margin_top", amount)
 	_margin_node.add_theme_constant_override("margin_bottom", amount)
+
+	_outer_frame_if_needed()
 
 	return self
 	
@@ -167,6 +172,13 @@ func paddingSpecific(left: int = 0, top: int = 0, right: int = 0, bottom: int = 
 		_panel_margin_node.add_theme_constant_override("margin_right", right)
 		_panel_margin_node.add_theme_constant_override("margin_top", top)
 		_panel_margin_node.add_theme_constant_override("margin_bottom", bottom)
+
+		if _explicit_modifiers.has("expand_horizontal") and _explicit_modifiers.get("expand_horizontal"):
+			_panel_margin_node.size_flags_horizontal = View.SizeFlags.FILL
+		
+		if _explicit_modifiers.has("expand_vertical") and _explicit_modifiers.get("expand_vertical"):
+			_panel_margin_node.size_flags_vertical = View.SizeFlags.FILL
+
 		return self
 
 	if not _use_margin:
@@ -177,6 +189,13 @@ func paddingSpecific(left: int = 0, top: int = 0, right: int = 0, bottom: int = 
 	_margin_node.add_theme_constant_override("margin_top", top)
 	_margin_node.add_theme_constant_override("margin_right", right)
 	_margin_node.add_theme_constant_override("margin_bottom", bottom)
+
+	if _explicit_modifiers.has("expand_horizontal") and _explicit_modifiers.get("expand_horizontal"):
+		_margin_node.size_flags_horizontal = View.SizeFlags.FILL
+		
+	if _explicit_modifiers.has("expand_vertical") and _explicit_modifiers.get("expand_vertical"):
+		_margin_node.size_flags_vertical = View.SizeFlags.FILL
+
 	return self
 
 ##The SizeFlags constants goes like this, you could also use integers values
@@ -207,6 +226,8 @@ func background(color: Color, corner_radius: int = 0) -> BaseBuilder:
 	style.corner_radius_bottom_left = corner_radius
 	style.corner_radius_bottom_right = corner_radius
 	_panel_node.add_theme_stylebox_override("panel", style)
+
+	_outer_frame_if_needed()
 
 	return self
 
@@ -258,6 +279,71 @@ func frame(width: int = View.FitContent, height: int = View.FitContent) -> BaseB
 		_get_parent_node().custom_minimum_size.y = height
 
 	return self
+
+func _internal_frame(width: int = View.FitContent, height: int = View.FitContent):
+	# Fit content is by default the so no need to change anything.
+	if width == View.FitContent and height == View.FitContent:
+		return
+
+	# if either width or height is View.Infinity we then expand and set explicit modifier for parent to respect this sizing.
+	if width == View.Infinity:
+		_content_node.size_flags_horizontal = View.SizeFlags.FILL
+
+		if _margin_node:
+			_margin_node.size_flags_horizontal = View.SizeFlags.FILL
+
+		if _panel_node:
+			_panel_node.size_flags_horizontal = View.SizeFlags.FILL
+
+		if _panel_margin_node:
+			_panel_node.size_flags_horizontal = View.SizeFlags.FILL
+
+		_get_parent_node().size_flags_horizontal = View.SizeFlags.EXPAND_FILL
+		_explicit_modifiers["expand_horizontal"] = true
+
+	if height == View.Infinity:
+		_content_node.size_flags_vertical = View.SizeFlags.FILL
+
+		if _margin_node:
+			_margin_node.size_flags_vertical = View.SizeFlags.FILL
+
+		if _panel_node:
+			_panel_node.size_flags_vertical = View.SizeFlags.FILL
+
+		if _panel_margin_node:
+			_panel_node.size_flags_vertical = View.SizeFlags.FILL
+
+		_get_parent_node().size_flags_vertical = View.SizeFlags.EXPAND_FILL
+		_explicit_modifiers["expand_vertical"] = true
+
+	# custom size only modify the element that call frame, and because we are following FitContent (shrink_center) design
+	# the parent will grow based on the custom_minimum_size of the childs
+	if width >= 0:
+		_get_parent_node().size_flags_horizontal = View.SizeFlags.SHRINK_CENTER
+		_get_parent_node().custom_minimum_size.x = width
+
+	if height >= 0:
+		_get_parent_node().size_flags_vertical = View.SizeFlags.SHRINK_CENTER
+		_get_parent_node().custom_minimum_size.y = height
+
+func _outer_frame_if_needed():
+	if _explicit_modifiers.has("expand_horizontal") or _explicit_modifiers.has("expand_vertical"):
+		var should_expand = false
+		var should_expand_horizontal = _explicit_modifiers.get("expand_horizontal", false)
+		var should_expand_vertical = _explicit_modifiers.get("expand_vertical", false)
+		var horizontal_value = View.FitContent
+		var vertical_value = View.FitContent
+
+		if should_expand_horizontal:
+			should_expand = true
+			horizontal_value = View.Infinity
+
+		if should_expand_vertical:
+			should_expand = true
+			vertical_value = View.Infinity
+			
+		if should_expand:
+			frame(horizontal_value, vertical_value)
 
 func onMouseEntered(callback: Callable) -> BaseBuilder:
 	_content_node.mouse_entered.connect(callback)

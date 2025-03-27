@@ -13,7 +13,6 @@ config_version=5
 config/name="DeclarativeUI Example"
 run/main_scene="uid://38xdxhygy60f"
 config/features=PackedStringArray("4.4", "Forward Plus")
-run/low_processor_mode=true
 config/icon="res://icon.svg"
 
 [autoload]

@@ -31,7 +31,7 @@ func VBox(children: Array = [], description: String = "") -> ContainerBuilder:
 func Button(_text: String) -> ButtonBuilder:
 	return ButtonBuilder.new(_text)
 
-func ForEach(items, action: Callable):
+func ForEach(items, action: Callable) -> ContainerBuilder:
 	var result = []
 	for item in items:
 		var element = action.call(item)
@@ -110,12 +110,12 @@ enum TextAlignment {
 	BOTTOM = 2,
 }
 
-
 enum BoxContainerAlignment {
 	BEGIN = 0,
 	CENTER = 1,
 	END = 2,
 }
+
 
 const Infinity = -1
 const FitContent = -2
@@ -142,6 +142,11 @@ func AppUI(to_concert_with, person_name):
 	return build_nested_view("AppUI", element, self)
 
 
+func ContentView():
+	var element = load("res://examples/ContentView.gd").new()
+	return build_nested_view("ContentView", element, self)
+
+
 func OtherView():
 	var element = load("res://examples/OtherView.gd").new()
 	return build_nested_view("OtherView", element, self)
@@ -151,6 +156,11 @@ func PersonView(person_name):
 	var element = load("res://framework/views/PersonView.gd").new()
 	element.configure(person_name) #constructor call
 	return build_nested_view("PersonView", element, self)
+
+
+func SimpleView():
+	var element = load("res://examples/SimpleView.gd").new()
+	return build_nested_view("SimpleView", element, self)
 
 
 func ViewTest():

@@ -73,7 +73,7 @@ func _check_explicit_modifier():
 		if should_expand:
 			print("should expand: ", _content_node.name)
 			frame(horizontal_value, vertical_value)
-		
+
 func horizontal(description: String = "") -> ContainerBuilder:
 	if _content_node.get_parent() == _margin_node:
 		_content_node.queue_free()
@@ -94,7 +94,7 @@ func horizontal(description: String = "") -> ContainerBuilder:
 
 	_add_children_to_container()
 	_check_explicit_modifier()
-
+	_label_expand_horizontal()
 	return self
 	
 func vertical(description: String = "") -> ContainerBuilder:
@@ -117,7 +117,7 @@ func vertical(description: String = "") -> ContainerBuilder:
 
 	_add_children_to_container()
 	_check_explicit_modifier()
-
+	_label_expand_horizontal()
 	return self
 
 func spacing(value: int = 8) -> ContainerBuilder:
@@ -146,5 +146,27 @@ func background(color: Color, radius: int = 0) -> ContainerBuilder:
 	super.background(color, radius)
 
 	_check_explicit_modifier()
+
+	return self
+
+func changeToVertical(value: bool) -> ContainerBuilder:
+	if value:
+		return self.vertical()
+	else:
+		return self.horizontal()
+
+
+func _label_expand_horizontal() -> ContainerBuilder:
+	var highest_ratio = 0.0
+
+	for child in _children:
+		if child._has_explicit_modifier("ratio"):
+			print("node: ", child._content_node.name, " has ratio: ", child._explicit_modifiers.get("ratio"))
+			highest_ratio = max(highest_ratio, child._explicit_modifiers.get("ratio"))
+
+	for label_child in _children:
+		if label_child._has_explicit_modifier("label_expand_ratio"):
+			print("node: ", label_child._content_node.name, " has ratio: ", label_child._explicit_modifiers.get("label_expand_ratio"))
+			label_child._content_node.size_flags_stretch_ratio = highest_ratio
 
 	return self
