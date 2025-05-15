@@ -1,7 +1,20 @@
 extends BaseBuilder
 class_name ContainerBuilder
 
+#Builders Array, each builder construct itself from inside
 var _children: Array = []
+var _max_child_stretch_ratio: float = 1.0
+
+var children: Array:
+	set(new_children):
+		_children = new_children
+		for child in _content_node.get_children():
+			child.queue_free()
+		_add_children_to_container()
+		_check_explicit_modifier()
+		_check_custom_stretch_ratio()
+		print_debug("Children Prorperty Being called from Container: ", _get_parent_node().name)
+	get:
 
 func _init(children: Array = []):
 	_children = children # Store children for later use

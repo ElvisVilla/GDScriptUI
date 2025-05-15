@@ -39,6 +39,31 @@ func ForEach(items, action: Callable) -> ContainerBuilder:
 			result.append(element)
 	
 	return HBox(result, "ForEach")
+	# In order to bind the UI node we have to build it first
+	var hbox = HBox([])
+
+	# This kind of looks efficient
+	# What is not efficient is the way the property ContainerBuilder.children
+	# Works, we are deleting child nodes and create them again.
+	# Other frameworks like SwiftUI will work with ID
+	if items is ObserveArray:
+		# Bind to the container builder's children property
+		items.bind(hbox._content_node, "children", func(new_items: Array):
+			var new_elements = []
+			for item in new_items:
+				var element = action.call(item)
+				if element != null:
+					new_elements.append(element)
+			hbox.children = new_elements
+		)
+	else:
+		var result = []
+		for item in items:
+			var element = action.call(item)
+			if element != null:
+				result.append(element)
+
+	return hbox
 
 
 func Image(texture: String = "") -> TextureRectBuilder:
