@@ -1,12 +1,17 @@
 extends View
 class_name ViewTest
 
-var hello_world: String = "Hello World"
+var hello_world: Binding
+
+# func configure(message: Binding):
+# 	hello_world = message
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func configure(message) -> void:
+	hello_world = message
 	body = [
-
-		Label(hello_world)
-		.fontSize(26)
+		HBox([
+			Label(hello_world)
+			.fontSize(26),
+		], "Builder or Hboxcontainer"),
 	]

@@ -9,10 +9,24 @@ var nestedViews: Dictionary = {}
 func observe(property_name: String, value):
 	property_changed.emit(property_name, value)
 
+func to_parent(parent) -> ContainerBuilder:
+	print(body[0] is ContainerBuilder)
+	if body.size() > 0:
+		if not body[0] is ContainerBuilder:
+			return HBox(body).padding(16)._in_node(parent)
+		else:
+			return body[0].padding(16)._in_node(parent)
+	
+	return null
+
 
 func build_ui(parent) -> ContainerBuilder:
+	print(body[0] is ContainerBuilder)
 	if body.size() > 0:
-		return body[0].padding(16)._in_node(parent)
+		if not body[0] is ContainerBuilder:
+			return HBox(body).padding(16)
+		else:
+			return body[0].padding(16)
 	
 	return null
 
@@ -28,17 +42,11 @@ func VBox(children: Array = [], description: String = "") -> ContainerBuilder:
 
 # Button cant define icon because icon sizing doesnt work properly as TextureRect sizing
 # For adding icon inside of a Button is better to wrap a Image and Button inside of a BoxContainer 
+## Button from GDScriptUI
 func Button(_text: String) -> ButtonBuilder:
 	return ButtonBuilder.new(_text)
 
 func ForEach(items, action: Callable) -> ContainerBuilder:
-	var result = []
-	for item in items:
-		var element = action.call(item)
-		if element != null:
-			result.append(element)
-	
-	return HBox(result, "ForEach")
 	# In order to bind the UI node we have to build it first
 	var hbox = HBox([])
 
@@ -69,15 +77,18 @@ func ForEach(items, action: Callable) -> ContainerBuilder:
 func Image(texture: String = "") -> TextureRectBuilder:
 	return TextureRectBuilder.new(texture)
 
-func Label(text: String = "") -> LabelBuilder:
+func Label(text) -> LabelBuilder:
 	return LabelBuilder.new(text)
 
 ##Editor for Text
-func TextEdit(text: String, place_holder: String) -> TextEditBuilder:
+func TextEdit(text, place_holder: String) -> TextEditBuilder:
 	return TextEditBuilder.new(text, place_holder)
 
 func Spacer() -> SpacerBuilder:
 	return SpacerBuilder.new()
+
+func bind(initial_value) -> Binding:
+	return Binding.new(initial_value)
 
 
 # Custom enums that mirror TextureRect's enums for better readability
@@ -153,9 +164,9 @@ func set_nested_view(viewName: String, view: View):
 func get_nested_view(viewName: String) -> View:
 	return nestedViews[viewName]
 
-func build_nested_view(viewName: String, view: View, parent: Node):
+func build_nested_view(viewName: String, view: View, parent: Node) -> ContainerBuilder:
 	set_nested_view(viewName, view)
-	get_nested_view(viewName)._ready()
+	# get_nested_view(viewName)._ready()
 	return get_nested_view(viewName).build_ui(parent)
 
 
@@ -174,6 +185,7 @@ func ContentView():
 
 func OtherView():
 	var element = load("res://examples/OtherView.gd").new()
+	element.configure() #constructor call
 	return build_nested_view("OtherView", element, self)
 
 
@@ -188,8 +200,9 @@ func SimpleView():
 	return build_nested_view("SimpleView", element, self)
 
 
-func ViewTest():
+func ViewTest(message):
 	var element = load("res://framework/views/ViewTest.gd").new()
+	element.configure(message) #constructor call
 	return build_nested_view("ViewTest", element, self)
 
 # END GENERATED VIEW FUNCTIONS

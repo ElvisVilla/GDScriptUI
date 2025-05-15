@@ -1,11 +1,12 @@
 extends PanelContainer
 class_name UIRoot
 
-@export var content: View
+@onready var content: View = load("res://examples/OtherView.gd").new()
 
 func _ready():
 	if content:
-		content.build_ui(self)
+		content.configure()
+		content.to_parent(self)
 		connect_all_views(content)
 
 func connect_all_views(node):
@@ -32,7 +33,7 @@ func rebuild_ui():
 			child.queue_free()
 
 	# CRUCIAL STEP: Regenerate the body content with current properties
-	content._ready() # This will regenerate the body array with updated properties
+	content.configure() # This will regenerate the body array with updated properties
 
 	# Build UI again
-	content.build_ui(self)
+	content.to_parent(self)

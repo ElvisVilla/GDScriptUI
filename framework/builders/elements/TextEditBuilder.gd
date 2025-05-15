@@ -1,17 +1,24 @@
 extends BaseBuilder
 class_name TextEditBuilder
 
-func _init(initial_text: String = "", place_holder: String = ""):
+var text
+
+func _init(text_value, place_holder: String = ""):
 	_content_node = TextEdit.new()
-	_content_node.name = "Text Edit"
-	_content_node.text = initial_text
-	_content_node.placeholder_text = place_holder
+	# _content_node.name = "Text Edit"
 
+	text = text_value
+	if text is Binding:
+		_bind_text_edit(text)
+		_content_node.tree_exiting.connect(func(): text.unbind(_content_node, "text"))
+	else:
+		_content_node.text = text
+		_content_node.placeholder_text = place_holder
 
-# Sets the text content
-func text(value: String) -> TextEditBuilder:
-	_content_node.text = value
-	return self
+# # Sets the text content
+# func text(value: String) -> TextEditBuilder:
+# 	_content_node.text = value
+# 	return self
 
 # Sets whether the text can be edited
 func editable(value: bool = true) -> TextEditBuilder:
@@ -56,7 +63,7 @@ func readonly(value: bool = true) -> TextEditBuilder:
 	return self
 
 # Controls syntax highlighting (set to a specific language)
-func syntaxHighlighting(language: String = "") -> TextEditBuilder:
+func syntaxHighlighting(_language: String = "") -> TextEditBuilder:
 	_content_node.syntax_highlighter = CodeHighlighter.new()
 	# This is a simplified approach - in a real implementation
 	# you would want to configure the highlighter for the specific language
@@ -94,3 +101,16 @@ func fontSize(font_size: int) -> TextEditBuilder:
 func autoIndent(enabled: bool = true) -> TextEditBuilder:
 	_content_node.auto_indent = enabled
 	return self
+
+func _bind_text_edit(binding):
+	var text_edit = _content_node as TextEdit
+
+	binding.bind(text_edit, "text", func(new_text): \
+		if !text_edit.has_focus(): text_edit.text = str(new_text))
+	
+	text_edit.text_changed.connect(func(): binding.value = text_edit.text)
+
+# func _notification(what: int) -> void:
+# 	if what == NOTIFICATION_PREDELETE:
+# 		if text is Binding:
+# 			text.unbind(_content_node, "text")

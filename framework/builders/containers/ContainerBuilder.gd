@@ -15,6 +15,7 @@ var children: Array:
 		_check_custom_stretch_ratio()
 		print_debug("Children Prorperty Being called from Container: ", _get_parent_node().name)
 	get:
+		return _children
 
 func _init(children: Array = []):
 	_children = children # Store children for later use
@@ -27,25 +28,11 @@ func _init(children: Array = []):
 
 func _add_children_to_container():
 	for child in _children:
+		#This lines where made with the intention of replace HBox or Vbox on BoxContainer
 		if child._get_parent_node().get_parent():
 			child._get_parent_node().get_parent().remove_child(child._get_parent_node())
 		_content_node.add_child(child._get_parent_node())
-
-# By Default Godot does fill content.
-# GDscriptUI intent to work as Fit Content (Shrink at content size)
-# This method propagates from the child to the parent recursively.
-# When child calls expand modifiers, this method explicitly set a modifier on the dictionary.
-# We are getting the name of the function the child called, and we called as well on the parent.
-# If the expands, the parents will also expand.
-func _call_child_explicit_size_modifier():
-	for child in _children:
-		if child._has_explicit_modifier("sizeFlags"):
-			var modifier_name = child._explicit_modifiers.get("sizeFlags")
-			
-			#ON here we are calling the same modifier on the container,
-			#This sets a explicit modifier on the container builder
-			#And that makes this function recursive
-			call(modifier_name)
+		child.direct_container_builder = self
 
 # By Default Godot UI works with fill content.
 # GDscriptUI intent to work as Fit Content (ShrinkCenter at content size)
@@ -64,7 +51,7 @@ func _check_explicit_modifier():
 		var horizontal_value = View.FitContent
 		var vertical_value = View.FitContent
 
-		# _get_parent_node is a helper function that retuns the outermost node of the BuilderContainer
+		# _get_parent_node is a helper function that retuns the outermost node of the Builder
 		var is_parent_already_expanded_horizontally = _get_parent_node().size_flags_horizontal == View.SizeFlags.EXPAND_FILL
 		var is_parent_already_expanded_vertically = _get_parent_node().size_flags_vertical == View.SizeFlags.EXPAND_FILL
 
@@ -78,7 +65,7 @@ func _check_explicit_modifier():
 			should_expand = true
 			vertical_value = View.Infinity
 
-		# If custom sizing was defined on this container we drop propagation 
+		# If custom sizing was defined on this container we drop propagation by setting should expand to false
 		if _get_parent_node().custom_minimum_size != Vector2.ZERO:
 			should_expand = false
 
@@ -88,11 +75,12 @@ func _check_explicit_modifier():
 			frame(horizontal_value, vertical_value)
 
 func horizontal(description: String = "") -> ContainerBuilder:
-	if _content_node.get_parent() == _margin_node:
-		_content_node.queue_free()
-	_content_node = HBoxContainer.new()
+	# if _content_node.get_parent() == _margin_node:
+	# 	_content_node.queue_free()
+	# _content_node = HBoxContainer.new()
+	_content_node.vertical = false
 	_content_node.alignment = View.BoxContainerAlignment.CENTER
-	_margin_node.add_child(_content_node)
+	# _margin_node.add_child(_content_node)
 	_margin_node.name = description + " Margin Container"
 	_content_node.name = description + " HBox Container"
 
@@ -105,17 +93,18 @@ func horizontal(description: String = "") -> ContainerBuilder:
 	_margin_node.add_theme_constant_override("margin_top", 8)
 	_margin_node.add_theme_constant_override("margin_bottom", 8)
 
-	_add_children_to_container()
+	# _add_children_to_container()
 	_check_explicit_modifier()
-	_label_expand_horizontal()
+	_check_custom_stretch_ratio()
 	return self
 	
 func vertical(description: String = "") -> ContainerBuilder:
-	if _content_node.get_parent() == _margin_node:
-		_content_node.queue_free()
-	_content_node = VBoxContainer.new()
+	# if _content_node.get_parent() == _margin_node:
+	# 	_content_node.queue_free()
+	# _content_node = VBoxContainer.new()
+	_content_node.vertical = true
 	_content_node.alignment = View.BoxContainerAlignment.CENTER
-	_margin_node.add_child(_content_node)
+	# _margin_node.add_child(_content_node)
 	_margin_node.name = description + " Margin Container"
 	_content_node.name = description + " VBox Container"
 	
@@ -128,9 +117,9 @@ func vertical(description: String = "") -> ContainerBuilder:
 	_margin_node.add_theme_constant_override("margin_top", 8)
 	_margin_node.add_theme_constant_override("margin_bottom", 8)
 
-	_add_children_to_container()
+	# _add_children_to_container()
 	_check_explicit_modifier()
-	_label_expand_horizontal()
+	_check_custom_stretch_ratio()
 	return self
 
 func spacing(value: int = 8) -> ContainerBuilder:
@@ -162,6 +151,7 @@ func background(color: Color, radius: int = 0) -> ContainerBuilder:
 
 	return self
 
+# Needs a Binding to reflect the change
 func changeToVertical(value: bool) -> ContainerBuilder:
 	if value:
 		return self.vertical()
@@ -169,17 +159,36 @@ func changeToVertical(value: bool) -> ContainerBuilder:
 		return self.horizontal()
 
 
-func _label_expand_horizontal() -> ContainerBuilder:
-	var highest_ratio = 0.0
+func _check_custom_stretch_ratio() -> ContainerBuilder:
+	var highest_ratio = 1.0
 
+	# Find highest ratio from any label
 	for child in _children:
 		if child._has_explicit_modifier("ratio"):
-			print("node: ", child._content_node.name, " has ratio: ", child._explicit_modifiers.get("ratio"))
 			highest_ratio = max(highest_ratio, child._explicit_modifiers.get("ratio"))
 
-	for label_child in _children:
-		if label_child._has_explicit_modifier("label_expand_ratio"):
-			print("node: ", label_child._content_node.name, " has ratio: ", label_child._explicit_modifiers.get("label_expand_ratio"))
-			label_child._content_node.size_flags_stretch_ratio = highest_ratio
+	# Apply to explicit label expansions
+	for child in _children:
+		# Because all labels expand by default because of (autowrap behaviour and fit content behaviour), if a label wants 
+		# to expand, because it is already expanded, in order to fight for space we need to set his aspect equal to the biggest
+		# brother in the container.
+		if child is LabelBuilder:
+			if child._has_explicit_modifier("label_expand_ratio"):
+				# the stretch_ratio needs to also be applied to padding, backgroun, margin
+				child._aspect_ratio_based_on_label_siblings(highest_ratio)
+
+			else:
+				continue
+			
+		# # NEW: Also apply to any element requesting expansion
+		# We are obtaining the highest ratio and apply it even on containers that should not be applied a different ratio that what they already have
+		# This code is adjusting child builders per container container builder, 
+		elif (child._has_explicit_modifier("expand_horizontal") or child._has_explicit_modifier("expand_vertical")):
+			child._aspect_ratio_based_on_label_siblings(highest_ratio)
+
+		print_debug("label_expand_horizontal, highest ratio: ", highest_ratio)
 
 	return self
+
+func _update_max_stretch_ratio(ratio: float):
+	_max_child_stretch_ratio = max(_max_child_stretch_ratio, ratio)

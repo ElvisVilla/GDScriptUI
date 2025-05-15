@@ -10,7 +10,8 @@ func _ready():
 				.fontSize(78),
 			
 			ForEach(items, func(item):
-				return Label(item).align(TextAlignment.CENTER))
+				return Label(item) \
+				.align(TextAlignment.CENTER))
 			.vertical() # makes the labels stack vertically
 		])
 		.spacing(10)

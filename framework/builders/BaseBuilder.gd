@@ -1,7 +1,9 @@
 extends RefCounted
 class_name BaseBuilder
 
+# strict modifiers that will not be overwriten by container modifiers
 var _explicit_modifiers = {}
+
 var _content_node: Control # The actual control being built (Button, Label, etc.)
 var _margin_node: MarginContainer # Optional margin wrapper
 var _panel_node: PanelContainer # Optional panel background wrapper
@@ -9,7 +11,8 @@ var _panel_margin_node: MarginContainer # Optional panel and margin wrapper
 var _use_margin: bool = false # Flag to determine if we're using margin
 var _use_panel: bool = false # Flag to determine if we're using panel background
 var _use_panel_margin: bool = false # Flag to determine if we're using panel and margin
-var builder_parent: Node
+var node_parent: Node
+var direct_container_builder: ContainerBuilder
 
 func _init():
 	pass
@@ -95,12 +98,15 @@ func _with_margin(enable: bool = true) -> BaseBuilder:
 # Add to parent node
 func _in_node(parent: Node) -> BaseBuilder:
 	parent.add_child(_get_parent_node())
-	builder_parent = parent
+	node_parent = parent
 	return self
 
 # Visibility control
-func visible(value: bool = true) -> BaseBuilder:
-	_get_parent_node().visible = value
+func visible(value) -> BaseBuilder:
+	if value is Binding:
+		value.bind(_get_parent_node(), "visible", func(is_visible): _get_parent_node().visible = is_visible)
+	else:
+		_get_parent_node().visible = value
 	return self
 
 # Size control
@@ -133,18 +139,27 @@ func mouseFilter(filter: Control.MouseFilter) -> BaseBuilder:
 	return self
 
 
-func padding(amount: int = 8) -> BaseBuilder:
+#amount: int = 8
+func padding(amount = 8) -> BaseBuilder:
 	if _use_panel and not _use_panel_margin:
 		# Automatically enable panel margin if padding is requested after background
 		_use_panel_margin = true
 		_setup_panel_margin_if_needed()
 		
-		_panel_margin_node.add_theme_constant_override("margin_left", amount)
-		_panel_margin_node.add_theme_constant_override("margin_right", amount)
-		_panel_margin_node.add_theme_constant_override("margin_top", amount)
-		_panel_margin_node.add_theme_constant_override("margin_bottom", amount)
+
+		if amount is Binding:
+			amount.bind(_panel_margin_node, "margin", func(value): _padding_theme_override(_panel_margin_node, value))
+		else:
+			_padding_theme_override(_panel_margin_node, amount)
+		# _panel_margin_node.add_theme_constant_override("margin_left", amount)
+		# _panel_margin_node.add_theme_constant_override("margin_right", amount)
+		# _panel_margin_node.add_theme_constant_override("margin_top", amount)
+		# _panel_margin_node.add_theme_constant_override("margin_bottom", amount)
 
 		_outer_frame_if_needed()
+
+		if _has_explicit_modifier("label_expand_ratio"):
+			_panel_margin_node.size_flags_stretch_ratio = _explicit_modifiers.get("label_expand_ratio")
 
 		return self
 	
@@ -152,12 +167,21 @@ func padding(amount: int = 8) -> BaseBuilder:
 		# For padding before background, enable regular margin
 		_with_margin(true)
 	
-	_margin_node.add_theme_constant_override("margin_left", amount)
-	_margin_node.add_theme_constant_override("margin_right", amount)
-	_margin_node.add_theme_constant_override("margin_top", amount)
-	_margin_node.add_theme_constant_override("margin_bottom", amount)
+		if amount is Binding:
+			amount.bind(_margin_node, "margin", func(value): _padding_theme_override(_margin_node, value))
+		else:
+			_padding_theme_override(_margin_node, amount)
+
+	# _padding_theme_override(_margin_node, amount)
+	# _margin_node.add_theme_constant_override("margin_left", amount)
+	# _margin_node.add_theme_constant_override("margin_right", amount)
+	# _margin_node.add_theme_constant_override("margin_top", amount)
+	# _margin_node.add_theme_constant_override("margin_bottom", amount)
 
 	_outer_frame_if_needed()
+
+	if _has_explicit_modifier("label_expand_ratio"):
+		_margin_node.size_flags_stretch_ratio = _explicit_modifiers.get("label_expand_ratio")
 
 	return self
 	
@@ -198,15 +222,12 @@ func paddingSpecific(left: int = 0, top: int = 0, right: int = 0, bottom: int = 
 
 	return self
 
-##The SizeFlags constants goes like this, you could also use integers values
-## 	SizeFlags {
-## 		SHRINK_BEGIN = 0,
-## 		FILL = 1,
-## 		EXPAND = 2,
-## 		EXPAND_FILL = 3, 
-## 		SHRINK_CENTER = 4,
-## 		SHRINK_END = 5,
-## 	}
+func _padding_theme_override(control_node: MarginContainer, amount: int):
+	control_node.add_theme_constant_override("margin_left", amount)
+	control_node.add_theme_constant_override("margin_top", amount)
+	control_node.add_theme_constant_override("margin_right", amount)
+	control_node.add_theme_constant_override("margin_bottom", amount)
+
 func _sizeFlags(size_flags_h := View.SizeFlags.FILL, size_flags_v := View.SizeFlags.FILL) -> BaseBuilder:
 	_get_parent_node().size_flags_horizontal = size_flags_h
 	_get_parent_node().size_flags_vertical = size_flags_v
@@ -228,6 +249,9 @@ func background(color: Color, corner_radius: int = 0) -> BaseBuilder:
 	_panel_node.add_theme_stylebox_override("panel", style)
 
 	_outer_frame_if_needed()
+
+	if _has_explicit_modifier("label_expand_ratio"):
+		_panel_node.size_flags_stretch_ratio = _explicit_modifiers.get("label_expand_ratio")
 
 	return self
 
@@ -280,7 +304,7 @@ func frame(width: int = View.FitContent, height: int = View.FitContent) -> BaseB
 
 	return self
 
-func _internal_frame(width: int = View.FitContent, height: int = View.FitContent):
+func _frame(width: int = View.FitContent, height: int = View.FitContent):
 	# Fit content is by default the so no need to change anything.
 	if width == View.FitContent and height == View.FitContent:
 		return
@@ -374,3 +398,22 @@ func _has_explicit_modifier(modifier: String) -> bool:
 func _add_explicit_modifier(modifier: String, value: bool) -> BaseBuilder:
 	_explicit_modifiers[modifier] = value
 	return self
+
+func _is_binding(value: Variant):
+	return value is Binding
+
+
+func _aspect_ratio_based_on_label_siblings(ratio):
+		_content_node.size_flags_stretch_ratio = ratio
+		if _margin_node != null:
+			_margin_node.size_flags_stretch_ratio = ratio
+
+
+		if _panel_node != null:
+			_panel_node.size_flags_stretch_ratio = ratio
+
+		if _panel_margin_node != null:
+			_panel_margin_node.size_flags_stretch_ratio = ratio
+# func _bind_property(binding: Binding, callback: Callable):
+	
+# 	binding.bind()

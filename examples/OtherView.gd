@@ -1,109 +1,83 @@
 extends View
 class_name OtherView
 
-#TODO: Reload script when the script changes, to reflect new code lines when the UI is running
-var data = [
-	Item.new("Sword", "This is the ancient sword that defeats the darkness, use it peace maker!"),
-	Item.new("Shield", "The protector of the realm, made of a theet of a dragon and forge with diamond on the edges"),
-	Item.new("Boots", "Boots that lets you move faster"),
-	Item.new("The Protector", "Chest that was made to protect the realm"),
-	Item.new("Balancer", "Orb that balance the stats of the porter"),
-]
+var names = ObserveArray.new(["Carmen", "Mariela", "Elier", ])
+var empty: Array[String]
+var should_vertical: Binding = Binding.new(false)
+var show_item = Binding.new(true)
+var desc3: Binding = bind("Here is some medium-size text")
+var paddin_amount := bind(20)
 
-var vertical: bool = false:
-	set(value):
-		vertical = value
-		observe("vertical", value)
-
-var number: int = 0:
-	set(value):
-		number = value
-		observe("number", value)
-
-func _ready():
+func configure() -> void:
 	body = [
 		HBox([
-			Button("Hello World")
-				.fontSize(44)
-				.frame(Infinity, Infinity)
-				.padding(10).
-				visible(false),
+
+			HBox([
+				Button("Update")
+				.onPressed(func():
+					desc3.value = ["Binding", "Signals", "Groups"].pick_random()
+					show_item.value = !show_item.value
+					),
+
+				Button("Add Item")
+					.onPressed(func(): names.append("Elvis")),
+
+				Button("Remove Item")
+					.onPressed(func(): names.remove_last()),
+
+				ViewTest(desc3)
+					.padding(),
+
+				# Label(desc3),
+				# Label(desc3)
+				# 	.fontSize(24)
+				# 	.padding(),
+				# PersonView("Elvis"),
+			]),
 
 			VBox([
 
 				HBox([
-					HBox([
-						Button("UpdateUI")
-							.onPressed(func(): number += 1),
 
-						Button("YAA")
-							.tooltip("This is a YAAA Button"),
+					Image("res://icon.svg")
+					.resize()
+					.frame(60, 60)
+					.stretchMode(View.StretchMode.KEEP_ASPECT_CENTERED)
+					.background(Color.WEB_GRAY, 10)
+					.frame(Infinity),
 
-						Button("YOO")
-							.background(Color.RED, 360)
-							.tooltip("This is a YOO Button"),
+					Label(desc3)
+						.fontSize(24)
+						.padding()
+						.frame(Infinity),
 
-					])
-					.fontSize(18)
-					.padding()
-					.background(Color.BLACK.lightened(0.2), 10),
-
-					HBox([
-						Label("First label that has some text to make something popup"),
-
-						Label("Long description to see how this works")
-							.frame(Infinity),
-					], "Labels HBOX"),
+					Label(desc3)
+						.fontSize(24),
+				
 				]),
 				
 				HBox([
 
-					Label("Description 1 some other text to test the autowrap")
-						.frame(Infinity),
+					HBox([
 
-					Label("Another Text")
-						.frame(Infinity),
+						Image("res://icon.svg")
+							.frame(Infinity),
+						Image("res://icon.svg")
+							.frame(Infinity),
 
-					Label("Description 3")
-						.frame(Infinity),
-					
-				]),
+					]).frame(Infinity),
+					# TextEdit(desc3, "Aqui vamos!")
+					# 	.frame(Infinity, Infinity),
 
-				Button("Horizontal" if vertical else "Vertical")
-					.onPressed(func(): vertical = !vertical),
+				])
+					.changeToVertical(should_vertical.value)
+					.spacing(20),
 
-				#ForEach returns a ContainerBuilder with all the card_items inside
-				ForEach(data, func(item): return card_item(item))
-					.changeToVertical(true if vertical else false)
-					.frame(800, 600),
-
+				# ForEach(names, func(name):
+				# 	return Label(name)),
 			])
 				.fontSize(18)
 				.background(Color.BLACK.lightened(0.3), 10),
 		])
-		.background(Color.BLACK.lightened(0.1), 10)
-		.padding(10),
+		.frame(Infinity, Infinity),
 	]
-
-
-func item_label(text) -> LabelBuilder:
-	var label = Label(text).align(TextAlignment.CENTER)
-	return label
-
-func title_label(text) -> LabelBuilder:
-	var label = Label(text).fontSize(50).align(TextAlignment.CENTER)
-	return label
-
-func card_item(item: Item) -> ContainerBuilder:
-	return VBox([
-
-		title_label(item.itemName)
-		.padding(),
-
-		item_label(item.itemDescription)
-		.padding(),
-
-	]) \
-	.spacing(10) \
-	.alignment(BoxContainerAlignment.BEGIN) \
-	.background(Color.BLACK.lightened(0.4), 10)
