@@ -11,7 +11,7 @@ var _panel_margin_node: MarginContainer # Optional panel and margin wrapper
 var _use_margin: bool = false # Flag to determine if we're using margin
 var _use_panel: bool = false # Flag to determine if we're using panel background
 var _use_panel_margin: bool = false # Flag to determine if we're using panel and margin
-var node_parent: Node
+var node_parent: Control
 var direct_container_builder: ContainerBuilder
 
 func _init():
@@ -147,14 +147,14 @@ func padding(amount = 8) -> BaseBuilder:
 		_setup_panel_margin_if_needed()
 		
 
-		if amount is Binding:
-			amount.bind(_panel_margin_node, "margin", func(value): _padding_theme_override(_panel_margin_node, value))
-		else:
-			_padding_theme_override(_panel_margin_node, amount)
-		# _panel_margin_node.add_theme_constant_override("margin_left", amount)
-		# _panel_margin_node.add_theme_constant_override("margin_right", amount)
-		# _panel_margin_node.add_theme_constant_override("margin_top", amount)
-		# _panel_margin_node.add_theme_constant_override("margin_bottom", amount)
+		# if amount is Binding:
+		# 	amount.bind(_panel_margin_node, "margin", func(value): _padding_theme_override(_panel_margin_node, value))
+		# else:
+			# _padding_theme_override(_panel_margin_node, amount)
+		_panel_margin_node.add_theme_constant_override("margin_left", amount)
+		_panel_margin_node.add_theme_constant_override("margin_right", amount)
+		_panel_margin_node.add_theme_constant_override("margin_top", amount)
+		_panel_margin_node.add_theme_constant_override("margin_bottom", amount)
 
 		_outer_frame_if_needed()
 
@@ -167,16 +167,15 @@ func padding(amount = 8) -> BaseBuilder:
 		# For padding before background, enable regular margin
 		_with_margin(true)
 	
-		if amount is Binding:
-			amount.bind(_margin_node, "margin", func(value): _padding_theme_override(_margin_node, value))
-		else:
-			_padding_theme_override(_margin_node, amount)
+		# if amount is Binding:
+		# 	amount.bind(_margin_node, "margin", func(value): _padding_theme_override(_margin_node, value))
+		# else:
+			# _padding_theme_override(_margin_node, amount)
 
-	# _padding_theme_override(_margin_node, amount)
-	# _margin_node.add_theme_constant_override("margin_left", amount)
-	# _margin_node.add_theme_constant_override("margin_right", amount)
-	# _margin_node.add_theme_constant_override("margin_top", amount)
-	# _margin_node.add_theme_constant_override("margin_bottom", amount)
+	_margin_node.add_theme_constant_override("margin_left", amount)
+	_margin_node.add_theme_constant_override("margin_right", amount)
+	_margin_node.add_theme_constant_override("margin_top", amount)
+	_margin_node.add_theme_constant_override("margin_bottom", amount)
 
 	_outer_frame_if_needed()
 
@@ -257,9 +256,9 @@ func background(color: Color, corner_radius: int = 0) -> BaseBuilder:
 
 #TODO: Test frame modifier for each control View
 func frame(width: int = View.FitContent, height: int = View.FitContent) -> BaseBuilder:
-	# Fit content is by default the so no need to change anything.
+	# Fit content is by default so no need to change anything.
 	if width == View.FitContent and height == View.FitContent:
-		return
+		return self
 
 	# if either width or height is View.Infinity we then expand and set explicit modifier for parent to respect this sizing.
 	if width == View.Infinity:
@@ -417,3 +416,7 @@ func _aspect_ratio_based_on_label_siblings(ratio):
 # func _bind_property(binding: Binding, callback: Callable):
 	
 # 	binding.bind()
+
+func ignoreSafeArea() -> BaseBuilder:
+	_explicit_modifiers["ignore_safe_area"] = true
+	return self

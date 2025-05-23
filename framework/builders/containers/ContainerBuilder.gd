@@ -13,6 +13,7 @@ var children: Array:
 		_add_children_to_container()
 		_check_explicit_modifier()
 		_check_custom_stretch_ratio()
+		_check_ignore_safe_area_modifier()
 		print_debug("Children Prorperty Being called from Container: ", _get_parent_node().name)
 	get:
 		return _children
@@ -51,7 +52,7 @@ func _check_explicit_modifier():
 		var horizontal_value = View.FitContent
 		var vertical_value = View.FitContent
 
-		# _get_parent_node is a helper function that retuns the outermost node of the Builder
+		# _get_parent_node() is a helper function that retuns the outermost node of the Builder
 		var is_parent_already_expanded_horizontally = _get_parent_node().size_flags_horizontal == View.SizeFlags.EXPAND_FILL
 		var is_parent_already_expanded_vertically = _get_parent_node().size_flags_vertical == View.SizeFlags.EXPAND_FILL
 
@@ -71,8 +72,14 @@ func _check_explicit_modifier():
 
 		# Perform chain of propagation
 		if should_expand:
-			print("should expand: ", _content_node.name)
+			print_debug("should expand: ", _content_node.name)
 			frame(horizontal_value, vertical_value)
+
+
+func _check_ignore_safe_area_modifier():
+	for child in _children:
+		if child._explicit_modifiers.get("ignore_safe_area"):
+			_explicit_modifiers.set("ignore_safe_area", true)
 
 func horizontal(description: String = "") -> ContainerBuilder:
 	# if _content_node.get_parent() == _margin_node:
@@ -96,6 +103,7 @@ func horizontal(description: String = "") -> ContainerBuilder:
 	# _add_children_to_container()
 	_check_explicit_modifier()
 	_check_custom_stretch_ratio()
+	_check_ignore_safe_area_modifier()
 	return self
 	
 func vertical(description: String = "") -> ContainerBuilder:
@@ -120,6 +128,7 @@ func vertical(description: String = "") -> ContainerBuilder:
 	# _add_children_to_container()
 	_check_explicit_modifier()
 	_check_custom_stretch_ratio()
+	_check_ignore_safe_area_modifier()
 	return self
 
 func spacing(value: int = 8) -> ContainerBuilder:
@@ -189,6 +198,3 @@ func _check_custom_stretch_ratio() -> ContainerBuilder:
 		print_debug("label_expand_horizontal, highest ratio: ", highest_ratio)
 
 	return self
-
-func _update_max_stretch_ratio(ratio: float):
-	_max_child_stretch_ratio = max(_max_child_stretch_ratio, ratio)
