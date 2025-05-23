@@ -90,6 +90,29 @@ func TextEdit(text, place_holder: String) -> TextEditBuilder:
 func Spacer() -> SpacerBuilder:
 	return SpacerBuilder.new()
 
+func ColorView(color: Color) -> ColorBuilder:
+	return ColorBuilder.new(color)
+
+## Creates a gradient view with specified colors.
+## - startPoint (0,0) -> (top-left corner)
+## - endPoint (1,1) -> (bottom-right corner)
+func GradientView(colors: Array[Color], startPoint: Vector2 = Vector2(0, 0), endPoint: Vector2 = Vector2(1, 1)) -> ColorBuilder:
+	var texture = GradientTexture2D.new()
+	texture.fill_from = startPoint
+	texture.fill_to = endPoint
+	texture.gradient = Gradient.new()
+	texture.gradient.colors = colors
+	
+	var off_set = []
+	for element in range(colors.size()):
+		if element == 0:
+			off_set.append(element)
+			continue
+			
+		off_set.append(1.0 / element)
+	texture.gradient.offsets = off_set
+	return ColorBuilder.new(texture)
+
 func bind(initial_value) -> Binding:
 	return Binding.new(initial_value)
 
