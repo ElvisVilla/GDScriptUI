@@ -86,7 +86,7 @@ func horizontal(description: String = "") -> ContainerBuilder:
 	# 	_content_node.queue_free()
 	# _content_node = HBoxContainer.new()
 	_content_node.vertical = false
-	_content_node.alignment = View.BoxContainerAlignment.CENTER
+	_content_node.alignment = View.BoxContainerAlignment.BEGIN
 	# _margin_node.add_child(_content_node)
 	_margin_node.name = description + " Margin Container"
 	_content_node.name = description + " HBox Container"
@@ -111,7 +111,7 @@ func vertical(description: String = "") -> ContainerBuilder:
 	# 	_content_node.queue_free()
 	# _content_node = VBoxContainer.new()
 	_content_node.vertical = true
-	_content_node.alignment = View.BoxContainerAlignment.CENTER
+	_content_node.alignment = View.BoxContainerAlignment.BEGIN
 	# _margin_node.add_child(_content_node)
 	_margin_node.name = description + " Margin Container"
 	_content_node.name = description + " VBox Container"

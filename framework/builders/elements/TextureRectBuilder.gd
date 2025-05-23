@@ -33,3 +33,7 @@ func flipHorizontal(enable: bool = true) -> TextureRectBuilder:
 func flipVertical(enable: bool = true) -> TextureRectBuilder:
 	_content_node.flipVertical = enable
 	return self
+
+func tint(color: Color) -> TextureRectBuilder:
+	_content_node.modulate = color
+	return self
