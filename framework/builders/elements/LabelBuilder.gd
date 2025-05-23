@@ -26,7 +26,7 @@ func fontSize(font_size: int) -> LabelBuilder:
 	_add_explicit_modifier("fontSize", font_size)
 	return self
 
-func align(horizontal: View.TextAlignment = View.TextAlignment.CENTER, vertical: View.TextAlignment = View.TextAlignment.CENTER) -> LabelBuilder:
+func align(horizontal: View.TextAlignment = View.TextAlignment.LEADING, vertical: View.TextAlignment = View.TextAlignment.LEADING) -> LabelBuilder:
 	_content_node.horizontal_alignment = horizontal
 	_content_node.vertical_alignment = vertical
 	return self
@@ -93,11 +93,22 @@ func _calculate_stretch_ratio():
 # 		if text is Binding and _content_node:
 # 			text.unbind(_content_node, "text")
 
-# func padding(amount = 8):
-# 	super (amount)
+func fontColor(color: Color) -> LabelBuilder:
+	_content_node.add_theme_color_override("font_color", color)
+	return self
 
-# 	if _panel_margin_node:
-# 		_panel_margin_node.size_flags_stretch_ratio = ratio
+func regular() -> LabelBuilder:
+	_content_node.add_theme_font_override("font", load("res://framework/themes/SF Pro Fonts/regular_variation.tres"))
+	return self
 
-# 	if _margin_node:
-# 		_margin_node.size_flags_stretch_ratio = ratio
+func medium() -> LabelBuilder:
+	_content_node.add_theme_font_override("font", load("res://framework/themes/SF Pro Fonts/medium_variation.tres"))
+	return self
+
+func semiBold() -> LabelBuilder:
+	_content_node.add_theme_font_override("font", load("res://framework/themes/SF Pro Fonts/semi_bold_variation.tres"))
+	return self
+
+func bold() -> LabelBuilder:
+	_content_node.add_theme_font_override("font", load("res://framework/themes/SF Pro Fonts/bold_variantion.tres"))
+	return self
