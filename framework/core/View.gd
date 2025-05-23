@@ -39,6 +39,9 @@ func VBox(children: Array = [], description: String = "") -> ContainerBuilder:
 	var builder = ContainerBuilder.new(children)
 	return builder.vertical(description)
 
+func ZStack(children: Array = [], _description: String = "") -> ZStackBuilder:
+	var builder = ZStackBuilder.new(children)
+	return builder
 
 # Button cant define icon because icon sizing doesnt work properly as TextureRect sizing
 # For adding icon inside of a Button is better to wrap a Image and Button inside of a BoxContainer 
