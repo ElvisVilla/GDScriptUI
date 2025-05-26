@@ -3,10 +3,11 @@ class_name ButtonBuilder
 
 var button_style_box = StyleBoxFlat.new()
 
-func _init(_text: String):
+func _init(_text: String, action: Callable):
 	_content_node = Button.new()
 	_content_node.name = _text + " Button"
 	_content_node.text = _text
+	_content_node.pressed.connect(action)
 	_get_parent_node().size_flags_horizontal = View.SizeFlags.SHRINK_CENTER
 	_get_parent_node().size_flags_vertical = View.SizeFlags.SHRINK_CENTER
 

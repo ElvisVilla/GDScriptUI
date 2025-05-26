@@ -46,8 +46,8 @@ func ZStack(children: Array = [], _description: String = "") -> ZStackBuilder:
 # Button cant define icon because icon sizing doesnt work properly as TextureRect sizing
 # For adding icon inside of a Button is better to wrap a Image and Button inside of a BoxContainer 
 ## Button from GDScriptUI
-func Button(_text: String) -> ButtonBuilder:
-	return ButtonBuilder.new(_text)
+func Button(_text: String, action: Callable = Callable()) -> ButtonBuilder:
+	return ButtonBuilder.new(_text, action)
 
 func ForEach(items, action: Callable) -> ContainerBuilder:
 	# In order to bind the UI node we have to build it first
