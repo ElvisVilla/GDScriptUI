@@ -14,7 +14,6 @@ var children: Array:
 		_check_explicit_modifier()
 		_check_custom_stretch_ratio()
 		_check_ignore_safe_area_modifier()
-		print_debug("Children Prorperty Being called from Container: ", _get_parent_node().name)
 	get:
 		return _children
 
@@ -72,7 +71,6 @@ func _check_explicit_modifier():
 
 		# Perform chain of propagation
 		if should_expand:
-			print_debug("should expand: ", _content_node.name)
 			frame(horizontal_value, vertical_value)
 
 
@@ -82,37 +80,28 @@ func _check_ignore_safe_area_modifier():
 			_explicit_modifiers.set("ignore_safe_area", true)
 
 func horizontal(description: String = "") -> ContainerBuilder:
-	# if _content_node.get_parent() == _margin_node:
-	# 	_content_node.queue_free()
-	# _content_node = HBoxContainer.new()
 	_content_node.vertical = false
 	_content_node.alignment = View.BoxContainerAlignment.BEGIN
-	# _margin_node.add_child(_content_node)
 	_margin_node.name = description + " Margin Container"
 	_content_node.name = description + " HBox Container"
 
 	#spacing
 	_content_node.set("theme_override_constants/separation", 8)
 
-	#padding to what, HBoxContainer doesnt have padding
 	_margin_node.add_theme_constant_override("margin_left", 8)
 	_margin_node.add_theme_constant_override("margin_right", 8)
 	_margin_node.add_theme_constant_override("margin_top", 8)
 	_margin_node.add_theme_constant_override("margin_bottom", 8)
 
-	# _add_children_to_container()
 	_check_explicit_modifier()
 	_check_custom_stretch_ratio()
 	_check_ignore_safe_area_modifier()
 	return self
 	
 func vertical(description: String = "") -> ContainerBuilder:
-	# if _content_node.get_parent() == _margin_node:
-	# 	_content_node.queue_free()
-	# _content_node = VBoxContainer.new()
 	_content_node.vertical = true
 	_content_node.alignment = View.BoxContainerAlignment.BEGIN
-	# _margin_node.add_child(_content_node)
+
 	_margin_node.name = description + " Margin Container"
 	_content_node.name = description + " VBox Container"
 	
@@ -194,7 +183,5 @@ func _check_custom_stretch_ratio() -> ContainerBuilder:
 		# This code is adjusting child builders per container container builder, 
 		elif (child._has_explicit_modifier("expand_horizontal") or child._has_explicit_modifier("expand_vertical")):
 			child._aspect_ratio_based_on_label_siblings(highest_ratio)
-
-		print_debug("label_expand_horizontal, highest ratio: ", highest_ratio)
 
 	return self
