@@ -1,10 +1,20 @@
 extends RefCounted
 class_name Binding
 
+signal OnAnimationStart
+signal OnAnimationFinish
+
+var flow: Flow
+var _old_value
 var value:
 	set(new_value):
+		_old_value = value
 		value = new_value
-		_notify_binds()
+		if flow:
+			flow.interpolate(_old_value, new_value, func(interpolate_value):
+				_notify_binds(interpolate_value))
+		else:
+			_notify_binds(value)
 	get:
 		return value
 
@@ -16,10 +26,11 @@ func _init(initial_value) -> void:
 
 func bind(node: Node, property_name: String, update_callback: Callable):
 	var unique_id = node.get_instance_id()
-	print_debug("Bind Element Unique ID is: ", unique_id)
+	# if node not exist
 	if not _binds.has(unique_id):
 		_binds.set(unique_id, {})
 	
+
 	_binds[unique_id].set(property_name, update_callback)
 
 	#Initial Update
@@ -27,13 +38,18 @@ func bind(node: Node, property_name: String, update_callback: Callable):
 
 func unbind(node: Control, property_name: String):
 	var unique_id = node.get_instance_id()
-	print_debug("Unbind Element Unique ID is: ", unique_id)
 	if _binds.has(unique_id):
 		_binds[unique_id].erase(property_name)
 		if _binds[unique_id].is_empty():
 			_binds.erase(unique_id)
 
-func _notify_binds():
+# This function is called when value change 
+func _notify_binds(with_value):
 	for node_binds in _binds.values():
 		for update_callback in node_binds.values():
-			update_callback.call(value)
+			update_callback.call(with_value)
+
+
+func animation(flow: Flow) -> Binding:
+	self.flow = flow
+	return self
