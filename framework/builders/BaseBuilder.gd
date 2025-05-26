@@ -104,15 +104,23 @@ func _in_node(parent: Node) -> BaseBuilder:
 # Visibility control
 func visible(value) -> BaseBuilder:
 	if value is Binding:
-		value.bind(_get_parent_node(), "visible", func(is_visible): _get_parent_node().visible = is_visible)
+		value.bind(_get_parent_node(), "visible", func(is_visible):
+			_get_parent_node().visible = is_visible)
 	else:
 		_get_parent_node().visible = value
 	return self
 
-# Size control
-func size(width: int, height: int) -> BaseBuilder:
-	_content_node.custom_minimum_size = Vector2(width, height)
+## Not implemented correctly yet
+func _size(width, height) -> BaseBuilder:
+	if width is Binding:
+		width.bind(_get_parent_node(), "size.x", func(new_value):
+			_get_parent_node().size = Vector2(new_value, new_value))
+	else:
+		_get_parent_node().size = Vector2(width, height)
+
 	return self
+
+#END OF TESTING
 
 # Name setting (applies to both the main node and the margin if present)
 func name(value: String) -> BaseBuilder:
@@ -145,16 +153,20 @@ func padding(amount = 8) -> BaseBuilder:
 		# Automatically enable panel margin if padding is requested after background
 		_use_panel_margin = true
 		_setup_panel_margin_if_needed()
+		# _with_panel_margin()
 		
 
-		# if amount is Binding:
-		# 	amount.bind(_panel_margin_node, "margin", func(value): _padding_theme_override(_panel_margin_node, value))
-		# else:
-			# _padding_theme_override(_panel_margin_node, amount)
-		_panel_margin_node.add_theme_constant_override("margin_left", amount)
-		_panel_margin_node.add_theme_constant_override("margin_right", amount)
-		_panel_margin_node.add_theme_constant_override("margin_top", amount)
-		_panel_margin_node.add_theme_constant_override("margin_bottom", amount)
+		if amount is Binding:
+			amount.bind(_panel_margin_node, "_panel_margin_node", func(new_value):
+				_panel_margin_node.add_theme_constant_override("margin_left", new_value)
+				_panel_margin_node.add_theme_constant_override("margin_right", new_value)
+				_panel_margin_node.add_theme_constant_override("margin_top", new_value)
+				_panel_margin_node.add_theme_constant_override("margin_bottom", new_value))
+		else:
+			_panel_margin_node.add_theme_constant_override("margin_left", amount)
+			_panel_margin_node.add_theme_constant_override("margin_right", amount)
+			_panel_margin_node.add_theme_constant_override("margin_top", amount)
+			_panel_margin_node.add_theme_constant_override("margin_bottom", amount)
 
 		_outer_frame_if_needed()
 
@@ -163,19 +175,20 @@ func padding(amount = 8) -> BaseBuilder:
 
 		return self
 	
-	if not _use_margin:
-		# For padding before background, enable regular margin
-		_with_margin(true)
-	
-		# if amount is Binding:
-		# 	amount.bind(_margin_node, "margin", func(value): _padding_theme_override(_margin_node, value))
-		# else:
-			# _padding_theme_override(_margin_node, amount)
+	# Regular padding
+	_with_margin(true)
 
-	_margin_node.add_theme_constant_override("margin_left", amount)
-	_margin_node.add_theme_constant_override("margin_right", amount)
-	_margin_node.add_theme_constant_override("margin_top", amount)
-	_margin_node.add_theme_constant_override("margin_bottom", amount)
+	if amount is Binding:
+		amount.bind(_margin_node, "margin", func(new_value):
+			_margin_node.add_theme_constant_override("margin_left", new_value)
+			_margin_node.add_theme_constant_override("margin_right", new_value)
+			_margin_node.add_theme_constant_override("margin_top", new_value)
+			_margin_node.add_theme_constant_override("margin_bottom", new_value))
+	else:
+		_margin_node.add_theme_constant_override("margin_left", amount)
+		_margin_node.add_theme_constant_override("margin_right", amount)
+		_margin_node.add_theme_constant_override("margin_top", amount)
+		_margin_node.add_theme_constant_override("margin_bottom", amount)
 
 	_outer_frame_if_needed()
 
@@ -403,20 +416,40 @@ func _is_binding(value: Variant):
 
 
 func _aspect_ratio_based_on_label_siblings(ratio):
-		_content_node.size_flags_stretch_ratio = ratio
-		if _margin_node != null:
-			_margin_node.size_flags_stretch_ratio = ratio
+	_content_node.size_flags_stretch_ratio = ratio
+	if _margin_node != null:
+		_margin_node.size_flags_stretch_ratio = ratio
 
 
-		if _panel_node != null:
-			_panel_node.size_flags_stretch_ratio = ratio
+	if _panel_node != null:
+		_panel_node.size_flags_stretch_ratio = ratio
 
-		if _panel_margin_node != null:
-			_panel_margin_node.size_flags_stretch_ratio = ratio
-# func _bind_property(binding: Binding, callback: Callable):
-	
-# 	binding.bind()
+	if _panel_margin_node != null:
+		_panel_margin_node.size_flags_stretch_ratio = ratio
 
 func ignoreSafeArea() -> BaseBuilder:
 	_explicit_modifiers["ignore_safe_area"] = true
+	return self
+
+
+func opacity(value) -> BaseBuilder:
+	if value is Binding:
+		value.bind(_get_parent_node(), "modulate", func(new_value):
+			_get_parent_node().modulate.a = new_value)
+	else:
+		_get_parent_node().modulate.a = value
+
+	return self
+
+func scale(value) -> BaseBuilder:
+	if value is Binding:
+		value.bind(_get_parent_node(), "scale", func(new_value):
+			_get_parent_node().scale = Vector2(new_value, new_value))
+	else:
+		_get_parent_node().scale = Vector2(value)
+
+	return self
+
+func animation(flow: Flow, binding: Binding) -> BaseBuilder:
+	binding.animation(flow)
 	return self
