@@ -165,11 +165,11 @@ enum SizeFlags {
 }
 
 enum TextAlignment {
-	TRAILING = 0,
+	LEADING = 0,
 	CENTER = 1,
-	LEADING = 2,
-	TOP = 0,
-	BOTTOM = 2,
+	TRAILING = 2,
+	# TOP = 0,
+	# BOTTOM = 2,
 }
 
 enum BoxContainerAlignment {
