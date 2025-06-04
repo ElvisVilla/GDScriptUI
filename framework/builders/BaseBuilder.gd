@@ -453,3 +453,28 @@ func scale(value) -> BaseBuilder:
 func animation(flow: Flow, binding: Binding) -> BaseBuilder:
 	binding.animation(flow)
 	return self
+# isPresented: Binding, content: BaseBuilder
+func sheet(isPresented: Binding, content: BaseBuilder) -> BaseBuilder:
+	var ui_root = Engine.get_main_loop().root.get_node("UIRoot")
+	
+	if view_owner == null:
+		view_owner = content.view_owner
+
+	isPresented.bind(_content_node, "isPresented", func(new_value: bool):
+		if new_value:
+			var sheet = Sheet.new()
+			sheet.view_content = view_owner.body
+			sheet.is_presented = isPresented
+			ui_root.modals.append(sheet)
+			ui_root.add_child(sheet)
+			sheet.present()
+		else:
+			# sheet.dismiss()
+			if ui_root.modals.is_empty():
+				print_debug("Nothing to dismiss")
+				return
+
+			ui_root.dismiss()
+			
+		)
+	return self
