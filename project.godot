@@ -10,10 +10,9 @@ config_version=5
 
 [application]
 
-config/name="DeclarativeUI Example"
+config/name="GDScriptUI"
 run/main_scene="uid://38xdxhygy60f"
 config/features=PackedStringArray("4.4", "Forward Plus")
-run/low_processor_mode=true
 config/icon="res://icon.svg"
 
 [autoload]
@@ -22,12 +21,18 @@ ViewRegistryUI="*res://framework/view_compiler/ViewRegistry.gd"
 
 [display]
 
-window/size/viewport_width=648
-window/size/viewport_height=1152
+window/size/viewport_width=720
+window/size/viewport_height=720
 window/size/always_on_top=true
+window/size/window_width_override=720
+window/size/window_height_override=1280
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
+
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=true
 
 [input]
 
@@ -40,3 +45,9 @@ save={
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/use_debanding=true

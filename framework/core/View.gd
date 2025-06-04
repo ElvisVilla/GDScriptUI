@@ -2,8 +2,7 @@ extends Node
 class_name View
 
 signal property_changed(property_name, new_value)
-@export var view_owner: Node
-var body: Array = []
+var body: BaseBuilder
 var nestedViews: Dictionary = {}
 
 ## Does emit property_change Signal
@@ -11,16 +10,28 @@ func observe(property_name: String, value):
 	property_changed.emit(property_name, value)
 
 
+func to_parent(parent):
+	if body != null:
+		body._in_node(parent)
+
+		# Only for Mobile, parent is expect to be MarginContainer acting as a SafeArea space
+		if parent is not MarginContainer:
+			return
+			
+		if body._explicit_modifiers.get("ignore_safe_area") == true:
+			# body._frame(Infinity, Infinity)
+			parent.add_theme_constant_override("margin_left", 0)
+			parent.add_theme_constant_override("margin_right", 0)
+			parent.add_theme_constant_override("margin_top", 0)
+			parent.add_theme_constant_override("margin_bottom", 0)
+
+
 func build_ui(parent) -> ContainerBuilder:
-	#We se the child content here, we also must pass the view_owner to the child views
-	var box: ContainerBuilder = null
-	if body.size() > 0:
-		box = VBox(body, name)._in_node(parent)
-		view_owner = parent
-		print("build_ui on parent: ", parent.name)
-		return box
+	if not body:
+		return null
 	
-	return null
+	body.view_owner = self
+	return body
 
 # Factory methods for container creation
 func HBox(children: Array = [], description: String = "") -> ContainerBuilder:
@@ -31,32 +42,82 @@ func VBox(children: Array = [], description: String = "") -> ContainerBuilder:
 	var builder = ContainerBuilder.new(children)
 	return builder.vertical(description)
 
+func ZStack(children: Array = [], _description: String = "") -> ZStackBuilder:
+	var builder = ZStackBuilder.new(children)
+	return builder
 
-##Icon can be resized to fit the button
-func Button(_text: String) -> ButtonBuilder:
-	return ButtonBuilder.new(_text)
+# Button cant define icon because icon sizing doesnt work properly as TextureRect sizing
+# For adding icon inside of a Button is better to wrap a Image and Button inside of a BoxContainer 
+## Button from GDScriptUI
+func Button(_text: String, action: Callable = Callable()) -> ButtonBuilder:
+	return ButtonBuilder.new(_text, action)
 
-func ForEach(items, action: Callable):
-	var result = []
-	for item in items:
-		var element = action.call(item)
-		if element != null:
-			result.append(element)
-	
-	return HBox(result, "ForEach")
+func ForEach(items, action: Callable) -> ContainerBuilder:
+	# In order to bind the UI node we have to build it first
+	var hbox = HBox([])
+
+	# This kind of looks efficient
+	# What is not efficient is the way the property ContainerBuilder.children
+	# Works, we are deleting child nodes and create them again.
+	# Other frameworks like SwiftUI will work with ID
+	if items is ObserveArray:
+		# Bind to the container builder's children property
+		items.bind(hbox._content_node, "children", func(new_items: Array):
+			var new_elements = []
+			for item in new_items:
+				var element = action.call(item)
+				if element != null:
+					new_elements.append(element)
+			hbox.children = new_elements
+		)
+	else:
+		var result = []
+		for item in items:
+			var element = action.call(item)
+			if element != null:
+				result.append(element)
+
+	return hbox
 
 
 func Image(texture: String = "") -> TextureRectBuilder:
 	return TextureRectBuilder.new(texture)
 
-func Label(text: String = "") -> LabelBuilder:
+func Label(text) -> LabelBuilder:
 	return LabelBuilder.new(text)
 
-func TextEdit(text: String, place_holder: String) -> TextEditBuilder:
+##Editor for Text
+func TextEdit(text, place_holder: String) -> TextEditBuilder:
 	return TextEditBuilder.new(text, place_holder)
 
 func Spacer() -> SpacerBuilder:
 	return SpacerBuilder.new()
+
+func ColorView(color: Color) -> ColorBuilder:
+	return ColorBuilder.new(color)
+
+## Creates a gradient view with specified colors.
+## - startPoint (0,0) -> (top-left corner)
+## - endPoint (1,1) -> (bottom-right corner)
+func GradientView(colors: Array[Color], startPoint: Vector2 = Vector2(0, 0), endPoint: Vector2 = Vector2(1, 1)) -> ColorBuilder:
+	var texture = GradientTexture2D.new()
+	texture.fill_from = startPoint
+	texture.fill_to = endPoint
+	texture.gradient = Gradient.new()
+	texture.gradient.colors = colors
+	
+	var off_set = []
+	for element in range(colors.size()):
+		if element == 0:
+			off_set.append(element)
+			continue
+			
+		off_set.append(1.0 / element)
+	texture.gradient.offsets = off_set
+	return ColorBuilder.new(texture)
+
+func bind(initial_value) -> Binding:
+	return Binding.new(initial_value)
 
 
 # Custom enums that mirror TextureRect's enums for better readability
@@ -88,6 +149,15 @@ enum StretchMode {
 	KEEP_ASPECT_COVERED = 6,
 }
 
+##The SizeFlags constants goes like this, you could also use integers values
+## 	SizeFlags {
+## 		0 = SHRINK_BEGIN
+## 		1 = FILL
+## 		2 = EXPAND
+## 		3 = EXPAND_FILL 
+## 		4 = SHRINK_CENTER
+## 		5 = SHRINK_END
+## 	}
 enum SizeFlags {
 	SHRINK_BEGIN = Control.SIZE_SHRINK_BEGIN,
 	FILL = Control.SIZE_FILL,
@@ -97,6 +167,13 @@ enum SizeFlags {
 	SHRINK_END = Control.SIZE_SHRINK_END,
 }
 
+enum TextAlignment {
+	LEADING = 0,
+	CENTER = 1,
+	TRAILING = 2,
+	# TOP = 0,
+	# BOTTOM = 2,
+}
 
 enum BoxContainerAlignment {
 	BEGIN = 0,
@@ -104,36 +181,37 @@ enum BoxContainerAlignment {
 	END = 2,
 }
 
+
+const Infinity = -1
+const FitContent = -2
+
 func set_nested_view(viewName: String, view: View):
 	if not nestedViews.has(viewName):
-		nestedViews[viewName] = view
-		add_child(view, true)
+		nestedViews.set(viewName, view)
 
 func get_nested_view(viewName: String) -> View:
-	return nestedViews[viewName]
+	return nestedViews.get(viewName)
 
-func build_nested_view(viewName: String, view: View, parent: Node):
+func build_nested_view(viewName: String, view: View, parent: Node) -> ContainerBuilder:
 	set_nested_view(viewName, view)
-	get_nested_view(viewName)._ready()
 	return get_nested_view(viewName).build_ui(parent)
 
 
+# REFACTOR HOW UI ARE BUILD
+# What we really need is to retun the View, and construct it inside of the Builder
+# This way we can 
+
 # BEGIN GENERATED VIEW FUNCTIONS
 
-func AppUI(to_concert_with, person_name):
-	var element = load("res://framework/views/App UI.gd").new()
-	element.configure(to_concert_with, person_name) #constructor call
-	return build_nested_view("App UI", element, self)
+func HomeView():
+	var element = load("res://examples/mobile app/HomeView.gd").new()
+	element.configure() #constructor call
+	return build_nested_view("HomeView", element, self)
 
 
-func ViewTest():
-	var element = load("res://framework/views/ViewTest.gd").new()
-	return build_nested_view("ViewTest", element, self)
-
-
-func PersonView(person_name):
-	var element = load("res://framework/views/PersonView.gd").new()
-	element.configure(person_name) #constructor call
-	return build_nested_view("PersonView", element, self)
+func SheetTest(isPresented):
+	var element = load("res://examples/mobile app/SheetTest.gd").new()
+	element.configure(isPresented) #constructor call
+	return build_nested_view("SheetTest", element, self)
 
 # END GENERATED VIEW FUNCTIONS
