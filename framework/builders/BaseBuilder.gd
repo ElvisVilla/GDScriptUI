@@ -2,6 +2,7 @@ extends RefCounted
 class_name BaseBuilder
 
 # strict modifiers that will not be overwriten by container modifiers
+var view_owner: View
 var _explicit_modifiers = {}
 
 var _content_node: Control # The actual control being built (Button, Label, etc.)
@@ -453,6 +454,43 @@ func scale(value) -> BaseBuilder:
 func animation(flow: Flow, binding: Binding) -> BaseBuilder:
 	binding.animation(flow)
 	return self
+
+#TODO: This color rect needs to be tracked by the builder
+#TODO: 
+func blur(value) -> BaseBuilder:
+	var material = load("res://framework/shaders/SimpleBlurMat.tres")
+	var color_rect = ColorRect.new()
+	color_rect.material = material
+
+	if value is Binding:
+		value.bind(color_rect, "lod", func(new_value):
+			color_rect.material.set_shader_parameter("lod", new_value))
+	else:
+		color_rect.material.set_shader_parameter("lod", value)
+
+
+	if _use_panel_margin:
+		_set_blur(_panel_margin_node, color_rect, material)
+		
+	elif _use_panel:
+		_set_blur(_panel_node, color_rect, material)
+
+	elif _use_margin:
+		_set_blur(_margin_node, color_rect, material)
+	else:
+		_set_blur(_content_node, color_rect, material)
+	
+	return self
+
+func _set_blur(target_node: Control, color_rect: ColorRect, material):
+	var buffery = BackBufferCopy.new()
+	buffery.set("rect", Rect2(target_node.position.x, target_node.position.y, target_node.size.x, target_node.size.y))
+	target_node.add_child(color_rect)
+	target_node.add_child(buffery)
+	target_node.move_child(color_rect, 0)
+	buffery.show_behind_parent = true
+	color_rect.custom_minimum_size = target_node.size
+
 # isPresented: Binding, content: BaseBuilder
 func sheet(isPresented: Binding, content: BaseBuilder) -> BaseBuilder:
 	var ui_root = Engine.get_main_loop().root.get_node("UIRoot")

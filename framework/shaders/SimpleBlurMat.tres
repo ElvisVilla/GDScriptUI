@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c2hpvatscrjwk"]
+
+[ext_resource type="Shader" uid="uid://fykt5yxxo8if" path="res://framework/shaders/SimpleBlur.gdshader" id="1_kp7vt"]
+
+[resource]
+shader = ExtResource("1_kp7vt")
+shader_parameter/lod = 0.2
+shader_parameter/opacity = 0.23
