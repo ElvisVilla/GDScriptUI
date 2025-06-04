@@ -6,10 +6,18 @@ signal OnAnimationFinish
 
 var flow: Flow
 var _old_value
+var skipped_at_start = false
+
 var value:
 	set(new_value):
+		if not skipped_at_start:
+			skipped_at_start = true
+			value = new_value
+			return
+			
 		_old_value = value
 		value = new_value
+
 		if flow:
 			flow.interpolate(_old_value, new_value, func(interpolate_value):
 				_notify_binds(interpolate_value))
