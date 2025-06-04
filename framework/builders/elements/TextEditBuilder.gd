@@ -6,6 +6,7 @@ var text
 func _init(text_value, place_holder: String = ""):
 	_content_node = TextEdit.new()
 	# _content_node.name = "Text Edit"
+	_content_node.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 
 	text = text_value
 	if text is Binding:

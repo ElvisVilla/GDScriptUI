@@ -6,12 +6,13 @@
 extends _BASE_
 class_name _CLASS_
 
-
-func _ready():
+func configure():
 	#Body is where all the UI elements are defined
-	body = [
+	body = ZStack([
+
 		VBox([
 			Label("Hello World"),
-			Button("Click me")
+			Button("Click me!")
 		])
-	]
+
+	])

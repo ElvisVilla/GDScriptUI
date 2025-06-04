@@ -2,33 +2,36 @@ extends Node
 class_name View
 
 signal property_changed(property_name, new_value)
-var body: Array = []
+var body: BaseBuilder
 var nestedViews: Dictionary = {}
 
 ## Does emit property_change Signal
 func observe(property_name: String, value):
 	property_changed.emit(property_name, value)
 
-func to_parent(parent) -> ContainerBuilder:
-	print(body[0] is ContainerBuilder)
-	if body.size() > 0:
-		if not body[0] is ContainerBuilder:
-			return HBox(body).padding(16)._in_node(parent)
-		else:
-			return body[0].padding(16)._in_node(parent)
-	
-	return null
+
+func to_parent(parent):
+	if body != null:
+		body._in_node(parent)
+
+		# Only for Mobile, parent is expect to be MarginContainer acting as a SafeArea space
+		if parent is not MarginContainer:
+			return
+			
+		if body._explicit_modifiers.get("ignore_safe_area") == true:
+			# body._frame(Infinity, Infinity)
+			parent.add_theme_constant_override("margin_left", 0)
+			parent.add_theme_constant_override("margin_right", 0)
+			parent.add_theme_constant_override("margin_top", 0)
+			parent.add_theme_constant_override("margin_bottom", 0)
 
 
 func build_ui(parent) -> ContainerBuilder:
-	print(body[0] is ContainerBuilder)
-	if body.size() > 0:
-		if not body[0] is ContainerBuilder:
-			return HBox(body).padding(16)
-		else:
-			return body[0].padding(16)
+	if not body:
+		return null
 	
-	return null
+	body.view_owner = self
+	return body
 
 # Factory methods for container creation
 func HBox(children: Array = [], description: String = "") -> ContainerBuilder:
@@ -184,51 +187,31 @@ const FitContent = -2
 
 func set_nested_view(viewName: String, view: View):
 	if not nestedViews.has(viewName):
-		nestedViews[viewName] = view
-		add_child(view, true)
+		nestedViews.set(viewName, view)
 
 func get_nested_view(viewName: String) -> View:
-	return nestedViews[viewName]
+	return nestedViews.get(viewName)
 
 func build_nested_view(viewName: String, view: View, parent: Node) -> ContainerBuilder:
 	set_nested_view(viewName, view)
-	# get_nested_view(viewName)._ready()
 	return get_nested_view(viewName).build_ui(parent)
 
 
+# REFACTOR HOW UI ARE BUILD
+# What we really need is to retun the View, and construct it inside of the Builder
+# This way we can 
+
 # BEGIN GENERATED VIEW FUNCTIONS
 
-func AppUI(to_concert_with, person_name):
-	var element = load("res://framework/views/App UI.gd").new()
-	element.configure(to_concert_with, person_name) #constructor call
-	return build_nested_view("AppUI", element, self)
-
-
-func ContentView():
-	var element = load("res://examples/ContentView.gd").new()
-	return build_nested_view("ContentView", element, self)
-
-
-func OtherView():
-	var element = load("res://examples/OtherView.gd").new()
+func HomeView():
+	var element = load("res://examples/mobile app/HomeView.gd").new()
 	element.configure() #constructor call
-	return build_nested_view("OtherView", element, self)
+	return build_nested_view("HomeView", element, self)
 
 
-func PersonView(person_name):
-	var element = load("res://framework/views/PersonView.gd").new()
-	element.configure(person_name) #constructor call
-	return build_nested_view("PersonView", element, self)
-
-
-func SimpleView():
-	var element = load("res://examples/SimpleView.gd").new()
-	return build_nested_view("SimpleView", element, self)
-
-
-func ViewTest(message):
-	var element = load("res://framework/views/ViewTest.gd").new()
-	element.configure(message) #constructor call
-	return build_nested_view("ViewTest", element, self)
+func SheetTest(isPresented):
+	var element = load("res://examples/mobile app/SheetTest.gd").new()
+	element.configure(isPresented) #constructor call
+	return build_nested_view("SheetTest", element, self)
 
 # END GENERATED VIEW FUNCTIONS
