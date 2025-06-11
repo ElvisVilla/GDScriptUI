@@ -1,0 +1,12 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://3cybcl7tde43"]
+
+[sub_resource type="SystemFont" id="SystemFont_yvrwr"]
+font_names = PackedStringArray("SF Pro")
+
+[resource]
+base_font = SubResource("SystemFont_yvrwr")
+variation_opentype = {
+1869640570: 28,
+2003072104: 100,
+2003265652: 400
+}

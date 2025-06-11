@@ -1,0 +1,15 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://dmt4s0gk4qrtf"]
+
+[sub_resource type="SystemFont" id="SystemFont_5phad"]
+font_names = PackedStringArray("SF Pro")
+
+[resource]
+base_font = SubResource("SystemFont_5phad")
+variation_opentype = {
+1869640570: 28,
+2003072104: 100,
+2003265652: 700
+}
+opentype_features = {
+1801810542: 0
+}

@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://38xdxhygy60f"]
+
+[ext_resource type="Theme" uid="uid://jt8gq4qskt8g" path="res://addons/gdscriptui/themes/UITheme.tres" id="1_8xjey"]
+[ext_resource type="Script" uid="uid://cxqph78ou3jfy" path="res://addons/gdscriptui/core/GDScriptUIEntry.gd" id="1_xpnx5"]
+
+[node name="GDScriptUIEntry" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_8xjey")
+script = ExtResource("1_xpnx5")
+content_script = "uid://dkugdqobxi10k"
+metadata/_custom_type_script = "uid://cxqph78ou3jfy"
